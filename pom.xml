@@ -5,11 +5,12 @@
 
   <groupId>de.roskenet</groupId>
   <artifactId>springboot-javafx-support</artifactId>
-  <version>0.0.3-SNAPSHOT</version>
+  <version>0.0.3</version>
   <packaging>jar</packaging>
 
   <name>springboot-javafx-support</name>
   <description>Support for Spring Boot and JavaFX 8</description>
+  <url>https://github.com/roskenet/springboot-javafx-support</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -22,7 +23,23 @@
   <scm>
     <connection>git@github.com:roskenet/springboot-javafx-support.git</connection>
     <developerConnection>git@github.com:roskenet/springboot-javafx-support.git</developerConnection>
+    <url>https://github.com/roskenet/springboot-javafx-support</url>
   </scm>
+
+  <developers>
+    <developer>
+      <name>Felix Roske</name>
+      <email>f.roske@roskenet.de</email>
+      <url>http://www.felixroske.de</url>
+      <organization>roskenet</organization>
+    </developer>
+  </developers>
+
+  <licenses>
+    <license>
+      <name>MIT</name>
+    </license>
+  </licenses>
 
   <dependencies>
     <dependency>
@@ -92,7 +109,6 @@
           </execution>
         </executions>
       </plugin>
-      <!-- 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
@@ -106,7 +122,6 @@
           </execution>
         </executions>
       </plugin>
-       -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>

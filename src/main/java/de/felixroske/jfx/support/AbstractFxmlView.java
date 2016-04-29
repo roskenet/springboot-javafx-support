@@ -33,7 +33,7 @@ import javafx.scene.layout.AnchorPane;
  * "https://github.com/AdamBien/afterburner.fx/blob/02f25fdde9629fcce50ea8ace5dec4f802958c8d/src/main/java/com/airhacks/afterburner/views/FXMLView.java"
  * >FXMLView</a> that provides DI for Java FX Controllers via Spring.
  * 
- * Felix Roske <felix.roske@zalando.de> changed this to use annotation for fxml path.
+ * Felix Roske (felix.roske@zalando.de) changed this to use annotation for fxml path.
  * 
  * @author Thomas Darimont
  */
