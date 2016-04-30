@@ -14,4 +14,4 @@ before_script:
 script: mvn clean test
 
 after_success:
-  - mvn clean test jacoco:report coveralls:report
+  - coveralls
