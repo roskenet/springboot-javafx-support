@@ -1,2 +1,2 @@
 # springboot-javafx-support
-Spring / JavaFX8 Integration
+http://springboot-javafx-support.readthedocs.io
