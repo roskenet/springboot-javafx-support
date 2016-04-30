@@ -12,21 +12,21 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = ButtonsViewTest.class)
+@SpringApplicationConfiguration(classes = MainTestViewTest.class)
 @Configuration
-public class ButtonsViewTest {
+public class MainTestViewTest {
     
     @Bean
-    public de.felixroske.jfxtest.ButtonsView buttonsView() {
-        return new de.felixroske.jfxtest.ButtonsView();
+    public MainTestView mainTestView() {
+        return new MainTestView();
     }
 
     @Autowired
-    private de.felixroske.jfxtest.ButtonsView buttonsView;
+    private MainTestView mainTestView;
     
     @Test
     public void testAutowired() throws Exception {
-       assertThat(buttonsView, isA(ButtonsView.class)); 
+       assertThat(mainTestView, isA(MainTestView.class)); 
     }
     
 //    @Test
