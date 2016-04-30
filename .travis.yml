@@ -5,10 +5,11 @@ sudo: required
 jdk:
   - oraclejdk8
 
-script:
+before_script:
   - sudo apt-get update && sudo apt-get install oracle-java8-installer
   - java -version
-  - mvn clean test
+
+script: mvn clean test
 
 after_success:
   - mvn clean test jacoco:report coveralls:report
