@@ -9,6 +9,11 @@ This small library links Spring Boot with JavaFx 8. Let all your view and contro
 You'll find a full sandbox example application in the sources under src/test.
 In the example I use concrete classes everywhere. In a real world application you can (and should) of course use interfaces for views and controllers and let Spring do the magic to instantiate the right bean.
 
+0. Add the dependency
+---------------------
+You find the latest springboot-javafx-support library at maven-central:
+http://search.maven.org/#artifactdetails|de.roskenet|springboot-javafx-support|0.0.6|jar
+
 1. Generate your GUI with FXML using SceneBuilder
 -------------------------------------------------
 You find SceneBuilder here: http://gluonhq.com/open-source/scene-builder/
