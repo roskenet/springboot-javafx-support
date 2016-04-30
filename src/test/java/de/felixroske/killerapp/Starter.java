@@ -3,7 +3,7 @@ package de.felixroske.killerapp;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Lazy;
 
-import de.felixroske.jfx.support.AbstractJavaFxApplicationSupport;
+import de.felixroske.jfxsupport.AbstractJavaFxApplicationSupport;
 import de.felixroske.killerapp.complex.ComplexView;
 
 @Lazy

@@ -60,6 +60,11 @@
       <version>${spring-framework.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <version>1.3.3.RELEASE</version>
+    </dependency>
   </dependencies>
 
   <distributionManagement>
@@ -130,7 +135,7 @@
       <plugin>
         <groupId>org.eluder.coveralls</groupId>
         <artifactId>coveralls-maven-plugin</artifactId>
-        <version>4.0.0</version>
+        <version>4.1.0</version>
       </plugin>
       <plugin>
         <groupId>org.jacoco</groupId>

@@ -1,4 +1,4 @@
-package de.felixroske.killerapp.buttons;
+package de.felixroske.jfxtest;
 
 import de.felixroske.jfxsupport.AbstractFxmlView;
 import de.felixroske.jfxsupport.FXMLView;

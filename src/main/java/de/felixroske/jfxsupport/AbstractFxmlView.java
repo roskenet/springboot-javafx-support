@@ -1,4 +1,4 @@
-package de.felixroske.jfx.support;
+package de.felixroske.jfxsupport;
 
 import static java.util.ResourceBundle.getBundle;
 

@@ -1,6 +1,6 @@
 package de.felixroske.killerapp.buttons;
 
-import de.felixroske.jfx.support.FXMLController;
+import de.felixroske.jfxsupport.FXMLController;
 
 @FXMLController
 public class ButtonsController  {

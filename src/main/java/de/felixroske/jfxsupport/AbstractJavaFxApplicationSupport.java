@@ -1,4 +1,4 @@
-package de.felixroske.jfx.support;
+package de.felixroske.jfxsupport;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;

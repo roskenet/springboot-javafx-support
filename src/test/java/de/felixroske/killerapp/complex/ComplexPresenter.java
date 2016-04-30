@@ -2,7 +2,7 @@ package de.felixroske.killerapp.complex;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import de.felixroske.jfx.support.FXMLController;
+import de.felixroske.jfxsupport.FXMLController;
 import de.felixroske.killerapp.buttons.ButtonsView;
 import de.felixroske.killerapp.list.SomeListView;
 import javafx.fxml.FXML;
