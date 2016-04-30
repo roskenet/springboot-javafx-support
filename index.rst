@@ -4,3 +4,35 @@ SpringBoot JavaFx 8.0 Support
 
 In an ideal world, a UX designer creates nice and cool scenes and elements spiced with CSS, while the developer writes the logic for the application.
 
+This small library links Spring Boot with JavaFx 8. Let all your view and controller classes be Spring Beans and make use of all features in the Spring Universe. 
+
+You'll find a full sandbox example application in the sources under src/test.
+In the example I use concrete classes everywhere. In a real world application you can (and should) of course use interfaces for views and controllers and let Spring do the magic to instantiate the right bean.
+
+1. Generate your GUI with FXML using SceneBuilder
+-------------------------------------------------
+You find SceneBuilder here: http://gluonhq.com/open-source/scene-builder/
+Put the files in a folder called fxml in your classpath, so that Spring's resource loader can find them. Hint: Create a dedicated jar with all FXML, css and resource files and add it as a dependency using your preferred tooling (Maven, Gradle...).
+
+2. Create your view classes
+---------------------------
+Extend your view class from AbstractFxmlView and annotate it with @FXMLView. Name your class <FXMLFile>View.
+E.g. given your FXML-file is named somelist.fxml the corresponding view class is SomeListView. When you want to name your class different, you need to add the fxml file name as value to your @FXMLView annotation:
+@FXMLView("/fxml/myviewfile.fxml")
+
+3. Create a Controller, Presenter
+---------------------------------
+Create your controller class for your view as you defined it in the fxml file:
+fx:controller="de.example.MyCoolPresenter" and annotate MyCoolPresenter with @FXMLController.
+
+4. Create a Starter class
+-------------------------
+Create a usual JavaFx starter class, instead of extending Application, extend it from AbstractJavaFxApplicationSupport.
+Call the static launchApp() method. 
+
+Clone and improve me!
+---------------------
+Please clone the sources from https://github.com/roskenet/springboot-javafx-support.git
+Pull requests welcome!
+
+Felix Roske <felix.roske@zalando.de>
