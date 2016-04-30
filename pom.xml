@@ -5,12 +5,12 @@
 
   <groupId>de.roskenet</groupId>
   <artifactId>springboot-javafx-support</artifactId>
-  <version>0.0.4</version>
+  <version>0.0.5</version>
   <packaging>jar</packaging>
 
   <name>springboot-javafx-support</name>
   <description>Support for Spring Boot and JavaFX 8</description>
-  <url>https://github.com/roskenet/springboot-javafx-support</url>
+  <url>http://springboot-javafx-support.readthedocs.io</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
