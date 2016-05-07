@@ -5,7 +5,7 @@
 
 	<groupId>de.roskenet</groupId>
 	<artifactId>springboot-javafx-support</artifactId>
-	<version>0.0.7</version>
+	<version>0.0.8</version>
 	<packaging>jar</packaging>
 
 	<name>springboot-javafx-support</name>
