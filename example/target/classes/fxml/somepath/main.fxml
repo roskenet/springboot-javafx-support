@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.felixroske.killerapp.main.MainPresenter">
+   <children>
+      <Label layoutX="14.0" layoutY="28.0" onMouseClicked="#onLabelClicked" text="This is the GUI" />
+      <Button fx:id="clickButton" layoutX="14.0" layoutY="75.0" mnemonicParsing="false" onAction="#onButtonClicked" text="Click me!" />
+      <CheckBox fx:id="active" layoutX="163.0" layoutY="27.0" mnemonicParsing="false" text="CheckBox" />
+      <TextField fx:id="someText" layoutX="163.0" layoutY="75.0" />
+   </children>
+</Pane>
