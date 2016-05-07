@@ -6,7 +6,7 @@ In an ideal world, a UX designer creates nice and cool scenes and elements spice
 
 This small library links Spring Boot with JavaFx 8. Let all your view and controller classes be Spring Beans and make use of all features in the Spring Universe. 
 
-You'll find a full sandbox example application in the sources under src/test.
+You'll find a full sandbox example application in the sources under example.
 In the example I use concrete classes everywhere. In a real world application you can (and should) of course use interfaces for views and controllers and let Spring do the magic to instantiate the right bean.
 
 0. Add the dependency
