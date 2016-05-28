@@ -12,7 +12,7 @@ In the example I use concrete classes everywhere. In a real world application yo
 0. Add the dependency
 ---------------------
 You find the latest springboot-javafx-support library at maven-central:
-http://search.maven.org/#artifactdetails|de.roskenet|springboot-javafx-support|0.0.6|jar
+http://search.maven.org/#artifactdetails|de.roskenet|springboot-javafx-support|1.1.0|jar
 
 1. Generate your GUI with FXML using SceneBuilder
 -------------------------------------------------
@@ -34,6 +34,12 @@ fx:controller="de.example.MyCoolPresenter" and annotate MyCoolPresenter with @FX
 -------------------------
 Create a usual JavaFx starter class, instead of extending Application, extend it from AbstractJavaFxApplicationSupport.
 Call the static launchApp() method. 
+
+5. Adding resource bundles to the view
+--------------------------------------
+To i18n your application you can either add your properties files inside the package of your view class or add a bundle parameter to the @FXMLView annotation. Example: Your View is named foo.myapp.main.CoolView.class then your properties should be in the package foo.myapp.main as: cool.properties (default and fallback) and cool_de.properties (german), cool_fr.properties (french) etc.
+Or if you want to have your files reside in a different location (e.g. /i18n/messages_*.properties) then add your bundle by adding 
+@FXML(bundle = "i18n.messages") Be aware of the dot because the FXMLLoader assumes that this is a classpath.
 
 Clone and improve me!
 ---------------------
