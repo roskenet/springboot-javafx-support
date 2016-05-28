@@ -10,4 +10,5 @@ import org.springframework.stereotype.Component;
 public @interface FXMLView {
 	String value() default "";
 	String[] css() default {}; 
+	String bundle() default "";
 }

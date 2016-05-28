@@ -242,7 +242,13 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	}
 
 	String getBundleName() {
-		return getClass().getPackage().getName() + "." + getConventionalName();
+	    // TODO refactor me!
+        FXMLView annotation = getFXMLAnnotation();
+        if (annotation != null && !annotation.bundle().equals("")) {
+           return annotation.bundle();
+        } else {
+            return getClass().getPackage().getName() + "." + getConventionalName();
+        }
 	}
 
 	static String stripEnding(String clazz) {
