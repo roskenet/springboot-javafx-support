@@ -5,8 +5,8 @@ import de.felixroske.jfxsupport.FXMLView;
 
 @FXMLView("/fxml/complex.fxml")
 public class ComplexView extends AbstractFxmlView {
-    
-    public ComplexView() {
-        setTitle("Dies ist ein Test");
-    }
+
+	public ComplexView() {
+		setTitle("Dies ist ein Test");
+	}
 }
