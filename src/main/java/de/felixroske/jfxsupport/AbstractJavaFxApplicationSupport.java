@@ -16,21 +16,19 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 
 	private static Class<? extends AbstractFxmlView> savedInitialView;
 
-	private static ConfigurableApplicationContext applicationContext;
+	private ConfigurableApplicationContext applicationContext;
 
-	private static Stage stage;
-	private static Scene scene; // = new Scene();
+	private Stage stage;
+	private Scene scene; 
 
 	@Override
 	public void init() throws Exception {
 		applicationContext = SpringApplication.run(getClass(), savedArgs);
-		applicationContext.getAutowireCapableBeanFactory().autowireBean(this);
 	}
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		AbstractJavaFxApplicationSupport.stage = stage;
-
+		this.stage = stage;
 		showView(savedInitialView);
 	}
 
