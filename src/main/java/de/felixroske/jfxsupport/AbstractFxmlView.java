@@ -39,8 +39,6 @@ import javafx.scene.layout.AnchorPane;
  */
 public abstract class AbstractFxmlView implements ApplicationContextAware {
 
-	private static String FXML_PATH = "/fxml/";
-
 	protected ObjectProperty<Object> presenterProperty;
 	protected StringProperty title = new SimpleStringProperty();
 	protected FXMLLoader fxmlLoader;
@@ -62,10 +60,16 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	}
 
 	public AbstractFxmlView() {
-		this(FXML_PATH);
+		init('/' + getClass().getPackage()
+							 .getName()
+							 .replace('.', '/'));
 	}
 
 	public AbstractFxmlView(String path) {
+		init(path);
+	}
+
+	private void init(String path) {
 		setFxmlRootPath(path);
 
 		// TODO refactor me!
