@@ -11,8 +11,8 @@ In the example I use concrete classes everywhere. In a real world application yo
 
 0. Add the dependency
 ---------------------
-You find the latest springboot-javafx-support library at maven-central:
-http://search.maven.org/#artifactdetails|de.roskenet|springboot-javafx-support|1.2.0|jar
+You find the latest springboot-javafx-support library at maven-central_:
+.. _maven-central: http://search.maven.org/#artifactdetails|de.roskenet|springboot-javafx-support|1.2.0|jar
 
 1. Generate your GUI with FXML using SceneBuilder
 -------------------------------------------------
