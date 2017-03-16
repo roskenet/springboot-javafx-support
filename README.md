@@ -3,3 +3,5 @@
 [![ReadTheDocs](https://img.shields.io/badge/docs-latest-brightgreen.svg?style=flat)](https://springboot-javafx-support.readthedocs.io)
 # springboot-javafx-support
 Spring Boot and JavaFx - A perfect match!
+
+Find a step-by-step example here: https://www.felixroske.de/page/programmierung/index.html
