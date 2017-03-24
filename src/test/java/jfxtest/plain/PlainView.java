@@ -1,9 +1,9 @@
-package de.felixroske.jfxtest;
+package jfxtest.plain;
 
 import de.felixroske.jfxsupport.AbstractFxmlView;
 import de.felixroske.jfxsupport.FXMLView;
 
 @FXMLView
-public class ButtonsView extends AbstractFxmlView {
+public class PlainView extends AbstractFxmlView {
 
 }
