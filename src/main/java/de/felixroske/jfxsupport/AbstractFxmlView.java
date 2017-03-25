@@ -39,8 +39,6 @@ import javafx.scene.layout.AnchorPane;
  */
 public abstract class AbstractFxmlView implements ApplicationContextAware {
 
-	private static String FXML_PATH = "/fxml/";
-
 	protected ObjectProperty<Object> presenterProperty;
 	protected StringProperty title = new SimpleStringProperty();
 	protected FXMLLoader fxmlLoader;
@@ -62,23 +60,19 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	}
 
 	public AbstractFxmlView() {
-		this(FXML_PATH);
-	}
+	    // Set the root path to package path
+        setFxmlRootPath("/" + getClass().getPackage().getName().replace('.', '/') + "/");
 
-	public AbstractFxmlView(String path) {
-		setFxmlRootPath(path);
+        // TODO refactor me!
+        FXMLView annotation = getFXMLAnnotation();
+        if (annotation != null && !annotation.value().equals("")) {
+            this.resource = getClass().getResource(annotation.value());
+        } else {
+            this.resource = getClass().getResource(getFxmlPath());
+        }
 
-		// TODO refactor me!
-		FXMLView annotation = getFXMLAnnotation();
-		if (annotation != null && !annotation.value().equals("")) {
-			this.resource = getClass().getResource(annotation.value());
-		} else {
-			this.resource = getClass().getResource(getFxmlPath());
-		}
-
-		this.presenterProperty = new SimpleObjectProperty<>();
-		// this.resource = getClass().getResource(getFxmlPath());
-		this.bundle = getResourceBundle(getBundleName());
+        this.presenterProperty = new SimpleObjectProperty<>();
+        this.bundle = getResourceBundle(getBundleName());
 	}
 
 	private FXMLView getFXMLAnnotation() {
