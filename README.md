@@ -5,3 +5,4 @@
 Spring Boot and JavaFx - A perfect match!
 
 Find a step-by-step example here: https://www.felixroske.de/page/programmierung/index.html
+And a bunch of examples here: https://github.com/roskenet/spring-javafx-examples/
