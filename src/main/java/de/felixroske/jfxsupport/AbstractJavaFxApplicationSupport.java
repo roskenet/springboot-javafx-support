@@ -21,11 +21,11 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 	private static Stage stage;
 	private static Scene scene; 
    
-    public Stage getStage() {
+    public static Stage getStage() {
         return stage;
     }
     
-    public Scene getScene() {
+    public static Scene getScene() {
         return scene;
     }
     
