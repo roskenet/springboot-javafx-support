@@ -183,7 +183,7 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 		parent.getStylesheets().add(uriToCss);
 	}
 
-	String getStyleSheetName() {
+	private String getStyleSheetName() {
 		return fxmlRoot + getConventionalName(".css");
 	}
 

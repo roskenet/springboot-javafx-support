@@ -12,7 +12,7 @@ import javafx.stage.Stage;
  */
 public abstract class AbstractJavaFxApplicationSupport extends Application {
 
-	private static String[] savedArgs;
+	private static String[] savedArgs = new String[0];
 
 	private static Class<? extends AbstractFxmlView> savedInitialView;
 
@@ -20,7 +20,15 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 
 	private Stage stage;
 	private Scene scene; 
-
+    
+    public Stage getStage() {
+        return stage;
+    }
+    
+    public Scene getScene() {
+        return scene;
+    }
+    
 	@Override
 	public void init() throws Exception {
 		applicationContext = SpringApplication.run(getClass(), savedArgs);
@@ -51,9 +59,10 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 
 	@Override
 	public void stop() throws Exception {
-
 		super.stop();
-		applicationContext.close();
+		if(applicationContext != null) {
+		    applicationContext.close();
+		} //else: someone did it already
 	}
 
 	protected static void launchApp(Class<? extends AbstractJavaFxApplicationSupport> appClass,
@@ -62,4 +71,5 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 		savedArgs = args;
 		Application.launch(appClass, args);
 	}
+
 }
