@@ -16,11 +16,11 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 
 	private static Class<? extends AbstractFxmlView> savedInitialView;
 
-	private ConfigurableApplicationContext applicationContext;
+	private static ConfigurableApplicationContext applicationContext;
 
-	private Stage stage;
-	private Scene scene; 
-    
+	private static Stage stage;
+	private static Scene scene; 
+   
     public Stage getStage() {
         return stage;
     }
@@ -36,11 +36,11 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 
 	@Override
 	public void start(Stage stage) throws Exception {
-		this.stage = stage;
+		AbstractJavaFxApplicationSupport.stage = stage;
 		showView(savedInitialView);
 	}
 
-	public void showView(Class<? extends AbstractFxmlView> newView) {
+	public static void showView(Class<? extends AbstractFxmlView> newView) {
 		AbstractFxmlView view = applicationContext.getBean(newView);
 		stage.titleProperty().bind(view.titleProperty());
 		if (scene == null) {
