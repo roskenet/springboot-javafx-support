@@ -16,8 +16,6 @@ import org.springframework.context.ApplicationContextAware;
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -40,7 +38,6 @@ import javafx.scene.layout.AnchorPane;
 public abstract class AbstractFxmlView implements ApplicationContextAware {
 
 	protected ObjectProperty<Object> presenterProperty;
-	protected StringProperty title = new SimpleStringProperty();
 	protected FXMLLoader fxmlLoader;
 	protected ResourceBundle bundle;
 
@@ -277,13 +274,5 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	 */
 	public ResourceBundle getResourceBundle() {
 		return this.bundle;
-	}
-	
-	protected void setTitle(String title) {
-	    this.title.setValue(title);
-	}
-	
-	public StringProperty titleProperty() {
-	    return title;
 	}
 }

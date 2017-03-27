@@ -75,8 +75,8 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 
 	public static void showView(Class<? extends AbstractFxmlView> newView) {
 		AbstractFxmlView view = applicationContext.getBean(newView);
-
-		stage.titleProperty().bind(view.titleProperty());
+		String title = applicationContext.getEnvironment().getProperty("javafx.title");
+		
 		if (scene == null) {
 			scene = new Scene(view.getView());
 		}
@@ -86,6 +86,9 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 		
 		stage.getIcons().addAll(icons);
 		stage.setScene(scene);
+		if(title != null) {
+		    setTitle(title);
+		}
 //		stage.setResizable(true);
 //		stage.centerOnScreen();
 		stage.show();
@@ -99,6 +102,10 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 		} //else: someone did it already
 	}
 
+	protected static void setTitle(String title) {
+	    stage.setTitle(title);
+	}
+	
 	protected static void launchApp(Class<? extends AbstractJavaFxApplicationSupport> appClass,
 			Class<? extends AbstractFxmlView> view, String[] args) {
 		savedInitialView = view;
