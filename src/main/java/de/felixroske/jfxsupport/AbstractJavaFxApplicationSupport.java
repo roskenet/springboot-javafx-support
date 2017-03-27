@@ -5,6 +5,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 /**
@@ -20,7 +21,9 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 
 	private static Stage stage;
 	private static Scene scene; 
-   
+
+	protected static Image icon;
+	
     public static Stage getStage() {
         return stage;
     }
@@ -32,6 +35,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 	@Override
 	public void init() throws Exception {
 		applicationContext = SpringApplication.run(getClass(), savedArgs);
+		icon = new Image(getClass().getResource("/icon.png").toExternalForm());
 	}
 
 	@Override
@@ -42,6 +46,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 
 	public static void showView(Class<? extends AbstractFxmlView> newView) {
 		AbstractFxmlView view = applicationContext.getBean(newView);
+
 		stage.titleProperty().bind(view.titleProperty());
 		if (scene == null) {
 			scene = new Scene(view.getView());
@@ -51,6 +56,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 		}
 		
 		// stage.setTitle(windowTitle);
+		stage.getIcons().add(icon);
 		stage.setScene(scene);
 //		stage.setResizable(true);
 //		stage.centerOnScreen();
