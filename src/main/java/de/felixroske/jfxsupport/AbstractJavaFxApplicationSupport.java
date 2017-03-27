@@ -1,7 +1,11 @@
 package de.felixroske.jfxsupport;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.env.Environment;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -22,7 +26,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 	private static Stage stage;
 	private static Scene scene; 
 
-	protected static Image icon;
+	protected static List<Image> icons = new ArrayList<>();
 	
     public static Stage getStage() {
         return stage;
@@ -31,11 +35,36 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
     public static Scene getScene() {
         return scene;
     }
+
+    private List<String> propertyArrayReader(Environment env, String propName) {
+        ArrayList<String> list = new ArrayList<>();
+        int counter=0; 
+        String prop = env.getProperty(propName+"[" + counter + "]");
+        
+        while(prop != null) {
+            list.add(prop);
+            counter++;
+            prop = env.getProperty(propName+"[" + counter + "]");
+        }
+        
+        return list;
+    }
     
 	@Override
 	public void init() throws Exception {
 		applicationContext = SpringApplication.run(getClass(), savedArgs);
-		icon = new Image(getClass().getResource("/icon.png").toExternalForm());
+		List<String> fsImages = propertyArrayReader(applicationContext.getEnvironment(), "javafx.appicons");
+		
+		if(!fsImages.isEmpty()) {
+		    fsImages.forEach((s) -> icons.add(new Image(getClass().getResource(s).toExternalForm())));
+		}
+		else { // add factory images
+		    icons.add(new Image(getClass().getResource("/icons/gear_16x16.png").toExternalForm()));
+		    icons.add(new Image(getClass().getResource("/icons/gear_24x24.png").toExternalForm()));
+		    icons.add(new Image(getClass().getResource("/icons/gear_36x36.png").toExternalForm()));
+		    icons.add(new Image(getClass().getResource("/icons/gear_42x42.png").toExternalForm()));
+		    icons.add(new Image(getClass().getResource("/icons/gear_64x64.png").toExternalForm()));
+		}
 	}
 
 	@Override
@@ -55,8 +84,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 			scene.setRoot(view.getView());
 		}
 		
-		// stage.setTitle(windowTitle);
-		stage.getIcons().add(icon);
+		stage.getIcons().addAll(icons);
 		stage.setScene(scene);
 //		stage.setResizable(true);
 //		stage.centerOnScreen();
