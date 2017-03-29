@@ -8,9 +8,11 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  * @author Felix Roske 
@@ -69,6 +71,15 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 
 	@Override
 	public void start(Stage stage) throws Exception {
+	    
+	    String stageStyle = applicationContext.getEnvironment().getProperty("javafx.stage.style");
+	    // User requests a different StageStyle?
+        // Then we need a new one:
+        if(stageStyle != null) {
+            StageStyle style = StageStyle.valueOf(stageStyle.toUpperCase());
+            stage = new Stage(style);
+        }
+	    
 		AbstractJavaFxApplicationSupport.stage = stage;
 		showView(savedInitialView);
 	}
@@ -103,6 +114,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 		}
 		stage.getIcons().addAll(icons);
 //		stage.centerOnScreen();
+
 		stage.show();
 	}
 
