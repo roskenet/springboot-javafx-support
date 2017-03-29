@@ -84,12 +84,24 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 			scene.setRoot(view.getView());
 		}
 		
-		stage.getIcons().addAll(icons);
 		stage.setScene(scene);
 		if(title != null) {
 		    setTitle(title);
 		}
-//		stage.setResizable(true);
+		
+		Long width = applicationContext.getEnvironment().getProperty("javafx.stage.width", Long.class);
+		if(width != null) {
+		    stage.setWidth(width);
+		}
+		Long height = applicationContext.getEnvironment().getProperty("javafx.stage.height", Long.class);
+		if(height != null) {
+		    stage.setHeight(height);
+		}
+		Boolean resizable = applicationContext.getEnvironment().getProperty("javafx.stage.resizable", Boolean.class);
+		if(resizable != null) {
+		    stage.setResizable(resizable);
+		}
+		stage.getIcons().addAll(icons);
 //		stage.centerOnScreen();
 		stage.show();
 	}
@@ -101,7 +113,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 		    applicationContext.close();
 		} //else: someone did it already
 	}
-
+	
 	protected static void setTitle(String title) {
 	    stage.setTitle(title);
 	}
