@@ -85,6 +85,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
         if(AbstractJavaFxApplicationSupport.splashScreen.visible()) {
             Scene splashScene = new Scene(splashScreen.getParent());
             splashStage.setScene(splashScene);
+//            splashStage.centerOnScreen();
             splashStage.show();
         }
         synchronized(this) {
