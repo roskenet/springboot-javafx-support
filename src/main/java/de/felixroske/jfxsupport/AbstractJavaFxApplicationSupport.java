@@ -12,11 +12,8 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.layout.Pane;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -24,8 +21,6 @@ import javafx.stage.StageStyle;
  * @author Felix Roske
  */
 public abstract class AbstractJavaFxApplicationSupport extends Application {
-    private static final int SPLASH_WIDTH = 676;
-    private static final int SPLASH_HEIGHT = 227;
     
     private static String[] savedArgs = new String[0];
 
@@ -35,6 +30,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 
     private static Stage stage;
     private static Scene scene;
+    private static SplashScreen splashScreen;
 
     protected static List<Image> icons = new ArrayList<>();
     private BooleanProperty appCtxLoaded = new SimpleBooleanProperty(false);
@@ -84,28 +80,29 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         AbstractJavaFxApplicationSupport.stage = stage;
+        Stage splashStage = new Stage(StageStyle.UNDECORATED); 
         
-        Stage splashStage = new Stage();
-        splashStage.initStyle(StageStyle.UNDECORATED);
-        Scene splashScene = new Scene(new Pane());
-        final Rectangle2D bounds = Screen.getPrimary().getBounds();
-        splashStage.setScene(splashScene);
-        splashStage.setX(bounds.getMinX() + bounds.getWidth() / 2 - SPLASH_WIDTH / 2);
-        splashStage.setY(bounds.getMinY() + bounds.getHeight() / 2 - SPLASH_HEIGHT / 2);
-        splashStage.show();
-        
+        if(AbstractJavaFxApplicationSupport.splashScreen.visible()) {
+            Scene splashScene = new Scene(splashScreen.getParent());
+            splashStage.setScene(splashScene);
+            splashStage.show();
+        }
         synchronized(this) {
         if (appCtxLoaded.get() == true) {
             // Spring ContextLoader was faster
             Platform.runLater(() -> {
                 showInitialView();
-                splashStage.hide();
+                if(AbstractJavaFxApplicationSupport.splashScreen.visible()) {
+                    splashStage.hide();
+                }
             });
         } else {
             appCtxLoaded.addListener((ov, oVal, nVal) -> {
                 Platform.runLater(() -> {
                     showInitialView();
-                    splashStage.hide();
+                    if(AbstractJavaFxApplicationSupport.splashScreen.visible()) {
+                        splashStage.hide();
+                    }
                 });
             });
         }
@@ -121,7 +118,6 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
         else {
             stage.initStyle(StageStyle.DECORATED);
         }
-        
 //        stage.hide();
         
         showView(savedInitialView);
@@ -178,8 +174,20 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 
     protected static void launchApp(Class<? extends AbstractJavaFxApplicationSupport> appClass,
             Class<? extends AbstractFxmlView> view, String[] args) {
+       launchApp(appClass, view, new SplashScreen(), args); 
+    }
+    
+    protected static void launchApp(Class<? extends AbstractJavaFxApplicationSupport> appClass,
+            Class<? extends AbstractFxmlView> view, SplashScreen splashScreen, String[] args) {
         savedInitialView = view;
         savedArgs = args;
+
+        if(splashScreen != null) { 
+            AbstractJavaFxApplicationSupport.splashScreen = splashScreen;
+        }
+        else {
+            AbstractJavaFxApplicationSupport.splashScreen = new SplashScreen();
+        }
         Application.launch(appClass, args);
     }
 
