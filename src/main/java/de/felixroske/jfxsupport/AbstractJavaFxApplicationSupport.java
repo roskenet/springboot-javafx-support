@@ -6,7 +6,6 @@ import java.util.concurrent.CompletableFuture;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.core.env.Environment;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -43,26 +42,12 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
         return scene;
     }
 
-    private List<String> propertyArrayReader(Environment env, String propName) {
-        ArrayList<String> list = new ArrayList<>();
-        int counter = 0;
-        String prop = env.getProperty(propName + "[" + counter + "]");
-
-        while (prop != null) {
-            list.add(prop);
-            counter++;
-            prop = env.getProperty(propName + "[" + counter + "]");
-        }
-
-        return list;
-    }
-
     @Override
     public void init() throws Exception {
         CompletableFuture.supplyAsync(() -> {
             ConfigurableApplicationContext ctx = SpringApplication.run(this.getClass(), savedArgs);
             
-            List<String> fsImages = propertyArrayReader(ctx.getEnvironment(), "javafx.appicons");
+            List<String> fsImages = PropertyArrayReader.get(ctx.getEnvironment(), "javafx.appicons");
             
             if (!fsImages.isEmpty()) {
                 fsImages.forEach((s) -> icons.add(new Image(getClass().getResource(s).toExternalForm())));
