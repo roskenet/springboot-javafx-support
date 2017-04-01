@@ -2,10 +2,11 @@ package de.felixroske.jfxsupport;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.springframework.core.env.Environment;
 
-public class PropertyArrayReader {
+public class PropertyReaderHelper {
 
     public static List<String> get(Environment env, String propName) {
         ArrayList<String> list = new ArrayList<>();
@@ -25,5 +26,13 @@ public class PropertyArrayReader {
         }
 
         return list;
+    }
+    
+    public static <T> void setIfPresent(Environment env, String key, Class<T> type, Consumer<T> function) {
+        @SuppressWarnings("unchecked")
+        T value = (T) env.getProperty(key);
+        if(value != null) {
+            function.accept(value);
+        }
     }
 }

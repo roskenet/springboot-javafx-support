@@ -47,7 +47,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
         CompletableFuture.supplyAsync(() -> {
             ConfigurableApplicationContext ctx = SpringApplication.run(this.getClass(), savedArgs);
             
-            List<String> fsImages = PropertyArrayReader.get(ctx.getEnvironment(), "javafx.appicons");
+            List<String> fsImages = PropertyReaderHelper.get(ctx.getEnvironment(), "javafx.appicons");
             
             if (!fsImages.isEmpty()) {
                 fsImages.forEach((s) -> icons.add(new Image(getClass().getResource(s).toExternalForm())));
@@ -116,31 +116,38 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
     
     public static void showView(Class<? extends AbstractFxmlView> newView) {
         AbstractFxmlView view = applicationContext.getBean(newView);
-        String title = applicationContext.getEnvironment().getProperty("javafx.title");
 
         if (scene == null) {
             scene = new Scene(view.getView());
         } else {
             scene.setRoot(view.getView());
         }
-
         stage.setScene(scene);
-        if (title != null) {
-            setTitle(title);
-        }
 
-        Long width = applicationContext.getEnvironment().getProperty("javafx.stage.width", Long.class);
-        if (width != null) {
-            stage.setWidth(width);
-        }
-        Long height = applicationContext.getEnvironment().getProperty("javafx.stage.height", Long.class);
-        if (height != null) {
-            stage.setHeight(height);
-        }
-        Boolean resizable = applicationContext.getEnvironment().getProperty("javafx.stage.resizable", Boolean.class);
-        if (resizable != null) {
-            stage.setResizable(resizable);
-        }
+        PropertyReaderHelper.setIfPresent(
+                applicationContext.getEnvironment(),
+                "javafx.title",
+                String.class,
+                AbstractJavaFxApplicationSupport::setTitle);
+        
+        PropertyReaderHelper.setIfPresent(
+                applicationContext.getEnvironment(),
+                "javafx.stage.width",
+                Double.class,
+                stage::setWidth);
+        
+        PropertyReaderHelper.setIfPresent(
+                applicationContext.getEnvironment(),
+                "javafx.stage.height",
+                Double.class,
+                stage::setHeight);
+
+        PropertyReaderHelper.setIfPresent(
+                applicationContext.getEnvironment(), 
+                "javafx.stage.resizable",
+                Boolean.class,
+                stage::setResizable); 
+        
         stage.getIcons().addAll(icons);
         stage.centerOnScreen();
         stage.show();
