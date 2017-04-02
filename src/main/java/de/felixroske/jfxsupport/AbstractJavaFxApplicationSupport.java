@@ -71,23 +71,21 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 //            splashStage.centerOnScreen();
             splashStage.show();
         }
+        
+        Runnable showMainAndCloseSplash = () -> {
+            showInitialView();
+            if(AbstractJavaFxApplicationSupport.splashScreen.visible()) {
+                splashStage.hide();
+            }
+        };
+        
         synchronized(this) {
         if (appCtxLoaded.get() == true) {
             // Spring ContextLoader was faster
-            Platform.runLater(() -> {
-                showInitialView();
-                if(AbstractJavaFxApplicationSupport.splashScreen.visible()) {
-                    splashStage.hide();
-                }
-            });
+            Platform.runLater(showMainAndCloseSplash);
         } else {
             appCtxLoaded.addListener((ov, oVal, nVal) -> {
-                Platform.runLater(() -> {
-                    showInitialView();
-                    if(AbstractJavaFxApplicationSupport.splashScreen.visible()) {
-                        splashStage.hide();
-                    }
-                });
+                Platform.runLater(showMainAndCloseSplash);
             });
         }
         }
