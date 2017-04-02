@@ -48,28 +48,41 @@ public class PropertyReaderHelperTest {
     public void testSetIfPresent_ExistingKey() throws Exception {
        TestObject testObject = new TestObject();
        
-       PropertyReaderHelper.setIfPresent(envSingleEntryMock, "entry", String.class, testObject::setEntry);
+       PropertyReaderHelper.setIfPresent(envSingleEntryMock, "entry", String.class, testObject::setStringEntry);
         
-       assertThat(testObject.getEntry(), is("entry"));
+       assertThat(testObject.getStringEntry(), is("entry"));
     }
     
     @Test
     public void testSetIfPresent_NonExistingKey() throws Exception {
-
        TestObject testObject = new TestObject();
        
-       PropertyReaderHelper.setIfPresent(envSingleEntryMock, "no_entry", String.class, testObject::setEntry);
+       PropertyReaderHelper.setIfPresent(envSingleEntryMock, "no_entry", String.class, testObject::setStringEntry);
         
-       assertThat(testObject.getEntry(), is("UNSET"));
+       assertThat(testObject.getStringEntry(), is("UNSET"));
+    }
+   
+    @Test(expected=ClassCastException.class)
+    public void testSetIfPresent_WrongType() throws Exception {
+        TestObject testObject = new TestObject();
+        
+        PropertyReaderHelper.setIfPresent(envSingleEntryMock, "entry", Long.class, testObject::setLongEntry);
     }
     
     class TestObject {
-        private String entry = "UNSET";
-        public void setEntry(String theEntryValue) {
-            this.entry = theEntryValue;
+        private String stringEntry = "UNSET";
+        private Long longEntry = Long.valueOf(0);
+        public String getStringEntry() {
+            return stringEntry;
         }
-        public String getEntry() {
-            return entry;
+        public void setStringEntry(String theEntryValue) {
+            this.stringEntry = theEntryValue;
+        }
+        public Long getLongEntry() {
+            return longEntry;
+        }
+        public void setLongEntry(Long longEntry) {
+            this.longEntry = longEntry;
         }
     }
     

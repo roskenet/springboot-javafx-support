@@ -27,19 +27,17 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 
     private static ConfigurableApplicationContext applicationContext;
 
-    private static Stage stage;
-    private static Scene scene;
     private static SplashScreen splashScreen;
 
     protected static List<Image> icons = new ArrayList<>();
     private BooleanProperty appCtxLoaded = new SimpleBooleanProperty(false);
 
     public static Stage getStage() {
-        return stage;
+        return GUIState.getStage();
     }
 
     public static Scene getScene() {
-        return scene;
+        return GUIState.getScene();
     }
 
     @Override
@@ -64,7 +62,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        AbstractJavaFxApplicationSupport.stage = stage;
+        GUIState.setStage(stage);
         Stage splashStage = new Stage(StageStyle.UNDECORATED); 
         
         if(AbstractJavaFxApplicationSupport.splashScreen.visible()) {
@@ -99,10 +97,10 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
     private void showInitialView() {
         String stageStyle = applicationContext.getEnvironment().getProperty("javafx.stage.style");
         if(stageStyle != null) {
-            stage.initStyle(StageStyle.valueOf(stageStyle.toUpperCase())); 
+            GUIState.getStage().initStyle(StageStyle.valueOf(stageStyle.toUpperCase())); 
         }
         else {
-            stage.initStyle(StageStyle.DECORATED);
+            GUIState.getStage().initStyle(StageStyle.DECORATED);
         }
 //        stage.hide();
         
@@ -117,12 +115,12 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
     public static void showView(Class<? extends AbstractFxmlView> newView) {
         AbstractFxmlView view = applicationContext.getBean(newView);
 
-        if (scene == null) {
-            scene = new Scene(view.getView());
+        if (GUIState.getScene() == null) {
+            GUIState.setScene(new Scene(view.getView()));
         } else {
-            scene.setRoot(view.getView());
+            GUIState.getScene().setRoot(view.getView());
         }
-        stage.setScene(scene);
+        GUIState.getStage().setScene(GUIState.getScene());
 
         PropertyReaderHelper.setIfPresent(
                 applicationContext.getEnvironment(),
@@ -134,23 +132,23 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
                 applicationContext.getEnvironment(),
                 "javafx.stage.width",
                 Double.class,
-                stage::setWidth);
+                GUIState.getStage()::setWidth);
         
         PropertyReaderHelper.setIfPresent(
                 applicationContext.getEnvironment(),
                 "javafx.stage.height",
                 Double.class,
-                stage::setHeight);
+                GUIState.getStage()::setHeight);
 
         PropertyReaderHelper.setIfPresent(
                 applicationContext.getEnvironment(), 
                 "javafx.stage.resizable",
                 Boolean.class,
-                stage::setResizable); 
+                GUIState.getStage()::setResizable); 
         
-        stage.getIcons().addAll(icons);
-        stage.centerOnScreen();
-        stage.show();
+        GUIState.getStage().getIcons().addAll(icons);
+        GUIState.getStage().centerOnScreen();
+        GUIState.getStage().show();
     }
 
     @Override
@@ -162,7 +160,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
     }
 
     protected static void setTitle(String title) {
-        stage.setTitle(title);
+        GUIState.getStage().setTitle(title);
     }
 
     protected static void launchApp(Class<? extends AbstractJavaFxApplicationSupport> appClass,
