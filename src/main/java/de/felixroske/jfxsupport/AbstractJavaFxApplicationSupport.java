@@ -29,7 +29,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 
     private static SplashScreen splashScreen;
 
-    protected static List<Image> icons = new ArrayList<>();
+    private static List<Image> icons = new ArrayList<>();
     private BooleanProperty appCtxLoaded = new SimpleBooleanProperty(false);
 
     public static Stage getStage() {
