@@ -3,7 +3,7 @@ package de.felixroske.jfxsupport;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class GUIState {
+public final class GUIState {
     
     // The GUI has one and only one state
     private GUIState() {
