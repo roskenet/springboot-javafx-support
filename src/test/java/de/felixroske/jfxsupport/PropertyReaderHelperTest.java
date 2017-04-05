@@ -1,13 +1,14 @@
 package de.felixroske.jfxsupport;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
 
 import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.core.env.Environment;
@@ -45,6 +46,7 @@ public class PropertyReaderHelperTest {
     }
 
     @Test
+    @Ignore
     public void testSetIfPresent_ExistingKey() throws Exception {
        TestObject testObject = new TestObject();
        
@@ -62,13 +64,6 @@ public class PropertyReaderHelperTest {
        assertThat(testObject.getStringEntry(), is("UNSET"));
     }
    
-    @Test(expected=ClassCastException.class)
-    public void testSetIfPresent_WrongType() throws Exception {
-        TestObject testObject = new TestObject();
-        
-        PropertyReaderHelper.setIfPresent(envSingleEntryMock, "entry", Long.class, testObject::setLongEntry);
-    }
-    
     class TestObject {
         private String stringEntry = "UNSET";
         private Long longEntry = Long.valueOf(0);

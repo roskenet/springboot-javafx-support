@@ -29,8 +29,7 @@ public class PropertyReaderHelper {
     }
     
     public static <T> void setIfPresent(Environment env, String key, Class<T> type, Consumer<T> function) {
-        @SuppressWarnings("unchecked")
-        T value = (T) env.getProperty(key);
+        T value = (T) env.getProperty(key,type);
         if(value != null) {
             function.accept(value);
         }
