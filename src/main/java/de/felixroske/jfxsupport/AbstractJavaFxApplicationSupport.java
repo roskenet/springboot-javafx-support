@@ -68,7 +68,6 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
         if(AbstractJavaFxApplicationSupport.splashScreen.visible()) {
             Scene splashScene = new Scene(splashScreen.getParent());
             splashStage.setScene(splashScene);
-//            splashStage.centerOnScreen();
             splashStage.show();
         }
         
@@ -76,6 +75,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
             showInitialView();
             if(AbstractJavaFxApplicationSupport.splashScreen.visible()) {
                 splashStage.hide();
+                splashStage.setScene(null);
             }
         };
         
@@ -145,7 +145,6 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
                 GUIState.getStage()::setResizable); 
         
         GUIState.getStage().getIcons().addAll(icons);
-        GUIState.getStage().centerOnScreen();
         GUIState.getStage().show();
     }
 
