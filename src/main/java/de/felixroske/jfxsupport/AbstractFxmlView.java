@@ -235,7 +235,7 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	String getBundleName() {
 	    // TODO refactor me!
         FXMLView annotation = getFXMLAnnotation();
-        if (annotation != null && !annotation.bundle().equals("")) {
+        if (annotation != null && !"".equals(annotation.bundle())) {
            return annotation.bundle();
         } else {
             return getClass().getPackage().getName() + "." + getConventionalName();

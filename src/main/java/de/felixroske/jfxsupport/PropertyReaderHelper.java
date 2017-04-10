@@ -29,7 +29,7 @@ public class PropertyReaderHelper {
     }
     
     public static <T> void setIfPresent(Environment env, String key, Class<T> type, Consumer<T> function) {
-        T value = (T) env.getProperty(key,type);
+        T value = env.getProperty(key,type);
         if(value != null) {
             function.accept(value);
         }
