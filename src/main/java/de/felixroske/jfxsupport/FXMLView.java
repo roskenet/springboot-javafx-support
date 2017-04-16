@@ -5,10 +5,33 @@ import java.lang.annotation.RetentionPolicy;
 
 import org.springframework.stereotype.Component;
 
+/**
+ * The annotation {@link FXMLView} indicates a class to be used in the context
+ * of an JavaFX view. Such classes are used in combination with fxml markup
+ * files.
+ */
 @Component
 @Retention(RetentionPolicy.RUNTIME)
 public @interface FXMLView {
+
+	/**
+	 * Value refers to a relative path from where to load a certain fxml file.
+	 *
+	 * @return the relative file path of a views fxml file.
+	 */
 	String value() default "";
-	String[] css() default {}; 
+
+	/**
+	 * Css files to be used together with this view.
+	 *
+	 * @return the string[] listing all css files.
+	 */
+	String[] css() default {};
+
+	/**
+	 * Resource bundle to be used with this view..
+	 *
+	 * @return the string of such resource bundle.
+	 */
 	String bundle() default "";
 }

@@ -3,26 +3,59 @@ package de.felixroske.jfxsupport;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public final class GUIState {
-    
-    // The GUI has one and only one state
-    private GUIState() {
-    }
-    
-    private static Stage stage;
-    private static Scene scene;
+/**
+ * The enum {@link GUIState} stores Scene and Stage objects as singletons in
+ * this VM.
+ * 
+ * @author Felix Roske <felix.roske@zalando.de>
+ * @author Andreas Jay <andreas.jay@hft-stuttgart.de>
+ */
+public enum GUIState {
 
-    public static synchronized Stage getStage() {
-        return stage;
-    }
-    public static synchronized void setStage(Stage stage) {
-        GUIState.stage = stage;
-    }
-    public static synchronized Scene getScene() {
-        return scene;
-    }
-    public static synchronized void setScene(Scene scene) {
-        GUIState.scene = scene;
-    }
+	/** The instance. */
+	INSTANCE;
+	/** The scene. */
+	private static Scene scene;
+
+	/** The stage. */
+	private static Stage stage;
+
+	/**
+	 * Gets the scene.
+	 *
+	 * @return the scene
+	 */
+	public static Scene getScene() {
+		return scene;
+	}
+
+	/**
+	 * Gets the stage.
+	 *
+	 * @return the stage
+	 */
+	public static Stage getStage() {
+		return stage;
+	}
+
+	/**
+	 * Sets the scene.
+	 *
+	 * @param scene
+	 *            the new scene
+	 */
+	public static void setScene(final Scene scene) {
+		GUIState.scene = scene;
+	}
+
+	/**
+	 * Sets the stage.
+	 *
+	 * @param stage
+	 *            the new stage
+	 */
+	public static void setStage(final Stage stage) {
+		GUIState.stage = stage;
+	}
 
 }
