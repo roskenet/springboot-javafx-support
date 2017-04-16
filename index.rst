@@ -37,7 +37,7 @@ Create a starter class extending AbstractJavaFxApplicationSupport. Annotate this
 5. Style your views
 -------------------
 You have multiple ways to style your view:
-First on is adding your JavaFX-css with SceneBuilder (the common JavaFX-way). Second is to add one or more css-files to the @FXMLView annotation: @FXMLView(css={"/company.css", "project.css"}). Or third possibility: Add a property javafx.css=/global.css to your application.properties (or application.yaml).
+First on is adding your JavaFX-css with SceneBuilder (the common JavaFX-way). Second is to add one or more css-files to the @FXMLView annotation: @FXMLView(css={"/css/company.css", "/css/project.css"}). Or third possibility: Add a property javafx.css=/global.css to your application.properties (or application.yaml).
 
 6. Adding resource bundles to the view
 --------------------------------------
