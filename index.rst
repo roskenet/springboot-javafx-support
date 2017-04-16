@@ -34,7 +34,12 @@ fx:controller="de.example.MyCoolPresenter" and annotate MyCoolPresenter with @FX
 -------------------------
 Create a starter class extending AbstractJavaFxApplicationSupport. Annotate this one with @SpringBootApplication and call launchApp() from the main method. 
 
-5. Adding resource bundles to the view
+5. Style your views
+-------------------
+You have multiple ways to style your view:
+First on is adding your JavaFX-css with SceneBuilder (the common JavaFX-way). Second is to add one or more css-files to the @FXMLView annotation: @FXMLView(css={"/company.css", "project.css"}). Or third possibility: Add a property javafx.css=/global.css to your application.properties (or application.yaml).
+
+6. Adding resource bundles to the view
 --------------------------------------
 To i18n your application you can either add your properties files inside the package of your view class or add a bundle parameter to the @FXMLView annotation. Example: Your View is named foo.myapp.main.CoolView.class then your properties should be in the package foo.myapp.main as: cool.properties (default and fallback) and cool_de.properties (german), cool_fr.properties (french) etc.
 Or if you want to have your files reside in a different location (e.g. /i18n/messages_*.properties) then add your bundle by adding 

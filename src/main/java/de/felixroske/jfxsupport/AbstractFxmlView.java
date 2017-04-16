@@ -4,6 +4,7 @@ import static java.util.ResourceBundle.getBundle;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
@@ -160,6 +161,13 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 
 	void addCSSIfAvailable(Parent parent) {
 		
+	    // Read global css when available:
+	    List<String> list = PropertyReaderHelper.get(applicationContext.getEnvironment(), "javafx.css");
+	    if(!list.isEmpty()) {
+	        list.forEach(css -> 
+	            parent.getStylesheets().add(getClass().getResource(css).toExternalForm()));
+	    }
+	    
 		// TODO refactor me!
 		FXMLView annotation = getFXMLAnnotation();
 		if(annotation != null && annotation.css().length > 0) {
