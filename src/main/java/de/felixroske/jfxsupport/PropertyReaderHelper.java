@@ -4,15 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.core.env.Environment;
 
 /**
  * The utility PropertyReaderHelper.
  *
- * @author felix.roske@zalando.de
- * @author andreas.jay@hft-stuttgart.de
+ * @author Felix Roske
+ * @author Andreas Jay
  */
 public class PropertyReaderHelper {
+
+	/** The Constant LOGGER. */
+	private static final Log LOGGER = LogFactory.getLog(AbstractJavaFxApplicationSupport.class);
 
 	/**
 	 * Instantiates a new property reader helper.

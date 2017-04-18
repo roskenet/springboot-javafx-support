@@ -1,5 +1,8 @@
 package de.felixroske.jfxsupport;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import javafx.scene.Parent;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.ImageView;
@@ -8,8 +11,14 @@ import javafx.scene.layout.VBox;
 /**
  * A default standard splash pane implementation Subclass it and override it's
  * methods to customize with your own behavior.
+ *
+ * @author Felix Roske
+ * @author Andreas Jay
  */
 public class SplashScreen {
+
+	/** The Constant LOGGER. */
+	private static final Log LOGGER = LogFactory.getLog(SplashScreen.class);
 
 	/** The default image. */
 	private static String DEFAULT_IMAGE = "/splash/javafx.png";

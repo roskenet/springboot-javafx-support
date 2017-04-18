@@ -39,8 +39,8 @@ import javafx.scene.layout.AnchorPane;
  * in combination with Spring. path.
  *
  * @author Thomas Darimont
- * @author felix.roske@zalando.de
- * @author andreas.jay@hft-stuttgart.de
+ * @author Felix Roske
+ * @author Andreas Jay
  *
  */
 public abstract class AbstractFxmlView implements ApplicationContextAware {

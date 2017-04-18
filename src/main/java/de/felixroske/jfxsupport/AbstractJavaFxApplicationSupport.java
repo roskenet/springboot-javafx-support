@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
@@ -16,13 +18,15 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class AbstractJavaFxApplicationSupport.
  *
  * @author Felix Roske
  */
 public abstract class AbstractJavaFxApplicationSupport extends Application {
+
+	/** The Constant LOGGER. */
+	private static final Log LOGGER = LogFactory.getLog(AbstractJavaFxApplicationSupport.class);
 
 	/** The saved args. */
 	private static String[] savedArgs = new String[0];
