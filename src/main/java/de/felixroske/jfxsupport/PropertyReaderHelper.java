@@ -7,17 +7,26 @@ import java.util.function.Consumer;
 import org.springframework.core.env.Environment;
 
 /**
- * The Class PropertyReaderHelper.
+ * The utility PropertyReaderHelper.
+ *
+ * @author felix.roske@zalando.de
+ * @author andreas.jay@hft-stuttgart.de
  */
 public class PropertyReaderHelper {
 
 	/**
-	 * Gets the.
+	 * Instantiates a new property reader helper.
+	 */
+	private PropertyReaderHelper() {
+	}
+
+	/**
+	 * Lookup in {@link Environment} a certain property.
 	 *
 	 * @param env
-	 *            the env
+	 *            the {@link Environment} context from which to
 	 * @param propName
-	 *            the prop name
+	 *            the name of the property to lookup from {@link Environment}.
 	 * @return the list
 	 */
 	public static List<String> get(final Environment env, final String propName) {
@@ -41,7 +50,8 @@ public class PropertyReaderHelper {
 	}
 
 	/**
-	 * Sets the if present.
+	 * Load from {@link Environment} a key with a given type. If sucj key is
+	 * present supply it in {@link Consumer}.
 	 *
 	 * @param <T>
 	 *            the generic type

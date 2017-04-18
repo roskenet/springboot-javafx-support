@@ -16,6 +16,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class AbstractJavaFxApplicationSupport.
  *
@@ -163,8 +164,18 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 		}
 		GUIState.getStage().setScene(GUIState.getScene());
 
+		applyEnvPropsToView();
+
+		GUIState.getStage().getIcons().addAll(icons);
+		GUIState.getStage().show();
+	}
+
+	/**
+	 * Apply env props to view.
+	 */
+	private static void applyEnvPropsToView() {
 		PropertyReaderHelper.setIfPresent(applicationContext.getEnvironment(), "javafx.title", String.class,
-				AbstractJavaFxApplicationSupport::setTitle);
+				GUIState.getStage()::setTitle);
 
 		PropertyReaderHelper.setIfPresent(applicationContext.getEnvironment(), "javafx.stage.width", Double.class,
 				GUIState.getStage()::setWidth);
@@ -174,9 +185,6 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 
 		PropertyReaderHelper.setIfPresent(applicationContext.getEnvironment(), "javafx.stage.resizable", Boolean.class,
 				GUIState.getStage()::setResizable);
-
-		GUIState.getStage().getIcons().addAll(icons);
-		GUIState.getStage().show();
 	}
 
 	/*
@@ -193,7 +201,8 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 	}
 
 	/**
-	 * Sets the title.
+	 * Sets the title. Allows to overwrite values applied during construction at
+	 * a later time.
 	 *
 	 * @param title
 	 *            the new title

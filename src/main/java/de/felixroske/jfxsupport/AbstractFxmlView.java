@@ -10,9 +10,12 @@ import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.util.StringUtils;
 
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
@@ -33,21 +36,43 @@ import javafx.scene.layout.AnchorPane;
  * >FXMLView</a> that provides DI for Java FX Controllers via Spring.
  *
  * Felix Roske (felix.roske@zalando.de) changed this to use annotation for fxml
- * path.
+ * in combination with Spring. path.
  *
  * @author Thomas Darimont
+ * @author felix.roske@zalando.de
+ * @author andreas.jay@hft-stuttgart.de
+ *
  */
 public abstract class AbstractFxmlView implements ApplicationContextAware {
 
+	/** The Constant LOGGER. */
+	private static final Log LOGGER = LogFactory.getLog(AbstractFxmlView.class);
+
+	/** The presenter property. */
 	protected ObjectProperty<Object> presenterProperty;
+
+	/** The fxml loader. */
 	protected FXMLLoader fxmlLoader;
+
+	/** The bundle. */
 	protected ResourceBundle bundle;
 
+	/** The resource. */
 	protected URL resource;
 
+	/** The application context. */
 	private ApplicationContext applicationContext;
+
+	/** The fxml root. */
 	private String fxmlRoot;
 
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * org.springframework.context.ApplicationContextAware#setApplicationContext
+	 * (org.springframework.context.ApplicationContext)
+	 */
 	@Override
 	public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
 
@@ -58,32 +83,78 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 		this.applicationContext = applicationContext;
 	}
 
+	/**
+	 * Instantiates a new abstract fxml view.
+	 */
 	public AbstractFxmlView() {
-		// Set the root path to package path
-		setFxmlRootPath("/" + getClass().getPackage().getName().replace('.', '/') + "/");
 
-		// TODO refactor me!
+		LOGGER.debug("AbstractFxmlView construction");
+		// Set the root path to package path
+		final String filePathFromPackageName = determineFilePathFromPackageName();
+		setFxmlRootPath("/" + filePathFromPackageName);
+		// get annotation declaration
 		final FXMLView annotation = getFXMLAnnotation();
-		if (annotation != null && !annotation.value().equals("")) {
-			resource = getClass().getResource(annotation.value());
-		} else {
-			resource = getClass().getResource(getFxmlPath());
-		}
+		// get url resource from annotation, or by naming convention
+		resource = getURLResource(annotation);
 
 		presenterProperty = new SimpleObjectProperty<>();
 		bundle = getResourceBundle(getBundleName());
+		LOGGER.debug(toString());
 	}
 
+	/**
+	 * Gets the URL resource. This will be derived from applied annotation value
+	 * or from naming convention.
+	 *
+	 * @param annotation
+	 *            the annotation as defined by inheriting class.
+	 * @return the URL resource
+	 */
+	private URL getURLResource(final FXMLView annotation) {
+		if (annotation != null && !annotation.value().equals("")) {
+			return getClass().getResource(annotation.value());
+		} else {
+			return getClass().getResource(getFxmlPath());
+		}
+	}
+
+	/**
+	 * Determine file path from package name.
+	 *
+	 * @return the string
+	 */
+	private String determineFilePathFromPackageName() {
+		return getClass().getPackage().getName().replace('.', '/') + "/";
+	}
+
+	/**
+	 * Gets the {@link FXMLView} annotation from inheriting class.
+	 *
+	 * @return the FXML annotation
+	 */
 	private FXMLView getFXMLAnnotation() {
 		final Class<? extends AbstractFxmlView> theClass = this.getClass();
 		final FXMLView annotation = theClass.getAnnotation(FXMLView.class);
 		return annotation;
 	}
 
+	/**
+	 * Creates the controller for type.
+	 *
+	 * @param type
+	 *            the type
+	 * @return the object
+	 */
 	private Object createControllerForType(final Class<?> type) {
 		return applicationContext.getBean(type);
 	}
 
+	/**
+	 * Sets the fxml root path.
+	 *
+	 * @param path
+	 *            the new fxml root path
+	 */
 	private void setFxmlRootPath(final String path) {
 		if (path.endsWith("/")) {
 			fxmlRoot = path;
@@ -92,6 +163,17 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 		}
 	}
 
+	/**
+	 * Load synchronously.
+	 *
+	 * @param resource
+	 *            the resource
+	 * @param bundle
+	 *            the bundle
+	 * @return the FXML loader
+	 * @throws IllegalStateException
+	 *             the illegal state exception
+	 */
 	FXMLLoader loadSynchronously(final URL resource, final ResourceBundle bundle) throws IllegalStateException {
 
 		final FXMLLoader loader = new FXMLLoader(resource, bundle);
@@ -106,6 +188,9 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 		return loader;
 	}
 
+	/**
+	 * Ensure fxml loader initialized.
+	 */
 	void ensureFxmlLoaderInitialized() {
 
 		if (fxmlLoader != null) {
@@ -120,7 +205,7 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	 * Initializes the view by loading the FXML (if not happened yet) and
 	 * returns the top Node (parent) specified in the FXML file.
 	 *
-	 * @return the view
+	 * @return the root view as determined from {@link FXMLLoader}.
 	 */
 	public Parent getView() {
 
@@ -148,7 +233,8 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	 * method omits the root container (e.g. {@link AnchorPane}) and gives you
 	 * the access to its first child.
 	 *
-	 * @return the first child of the {@link AnchorPane}
+	 * @return the first child of the {@link AnchorPane} or null if there are no
+	 *         childrens available from this view.
 	 */
 	public Node getViewWithoutRootContainer() {
 
@@ -160,6 +246,12 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 		return children.listIterator().next();
 	}
 
+	/**
+	 * Adds the CSS if available.
+	 *
+	 * @param parent
+	 *            the parent
+	 */
 	void addCSSIfAvailable(final Parent parent) {
 
 		// Read global css when available:
@@ -188,6 +280,11 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 		parent.getStylesheets().add(uriToCss);
 	}
 
+	/**
+	 * Gets the style sheet name.
+	 *
+	 * @return the style sheet name
+	 */
 	private String getStyleSheetName() {
 		return fxmlRoot + getConventionalName(".css");
 	}
@@ -225,6 +322,8 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	}
 
 	/**
+	 * Gets the conventional name.
+	 *
 	 * @param ending
 	 *            the suffix to append
 	 * @return the conventional name with stripped ending
@@ -234,6 +333,8 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	}
 
 	/**
+	 * Gets the conventional name.
+	 *
 	 * @return the name of the view without the "View" prefix in lowerCase. For
 	 *         AirhacksView just airhacks is going to be returned.
 	 */
@@ -241,16 +342,28 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 		return stripEnding(getClass().getSimpleName().toLowerCase());
 	}
 
+	/**
+	 * Gets the bundle name.
+	 *
+	 * @return the bundle name
+	 */
 	String getBundleName() {
 		// TODO refactor me!
 		final FXMLView annotation = getFXMLAnnotation();
-		if (annotation != null && !"".equals(annotation.bundle())) {
+		if (!StringUtils.isEmpty(annotation)) {
 			return annotation.bundle();
 		} else {
 			return getClass().getPackage().getName() + "." + getConventionalName();
 		}
 	}
 
+	/**
+	 * Strip ending.
+	 *
+	 * @param clazz
+	 *            the clazz
+	 * @return the string
+	 */
 	static String stripEnding(final String clazz) {
 
 		if (!clazz.endsWith("view")) {
@@ -261,27 +374,48 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	}
 
 	/**
+	 * Gets the fxml file path.
+	 *
 	 * @return the relative path to the fxml file derived from the FXML view.
 	 *         e.g. The name for the AirhacksView is going to be
 	 *         <PATH>/airhacks.fxml.
 	 */
 
 	final String getFxmlPath() {
-		return fxmlRoot + getConventionalName(".fxml");
+		final String fxmlPath = fxmlRoot + getConventionalName(".fxml");
+		LOGGER.debug("Determined fxmlPath: " + fxmlPath);
+		return fxmlPath;
 	}
 
+	/**
+	 * Gets the resource bundle.
+	 *
+	 * @param name
+	 *            the name
+	 * @return the resource bundle
+	 */
 	private ResourceBundle getResourceBundle(final String name) {
 		try {
 			return getBundle(name);
 		} catch (final MissingResourceException ex) {
+			LOGGER.warn("No resource bundle could be determined: " + ex.getMessage());
 			return null;
 		}
 	}
 
 	/**
+	 * Gets the resource bundle.
+	 *
 	 * @return an existing resource bundle, or null
 	 */
 	public ResourceBundle getResourceBundle() {
 		return bundle;
 	}
+
+	@Override
+	public String toString() {
+		return "AbstractFxmlView [presenterProperty=" + presenterProperty + ", bundle=" + bundle + ", resource="
+				+ resource + ", fxmlRoot=" + fxmlRoot + "]";
+	}
+
 }

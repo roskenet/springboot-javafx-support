@@ -6,9 +6,9 @@ import javafx.stage.Stage;
 /**
  * The enum {@link GUIState} stores Scene and Stage objects as singletons in
  * this VM.
- * 
- * @author Felix Roske <felix.roske@zalando.de>
- * @author Andreas Jay <andreas.jay@hft-stuttgart.de>
+ *
+ * @author Felix Roske
+ * @author Andreas Jay
  */
 public enum GUIState {
 
@@ -19,6 +19,18 @@ public enum GUIState {
 
 	/** The stage. */
 	private static Stage stage;
+
+	/** The title. */
+	private static String title;
+
+	/**
+	 * Gets the title.
+	 *
+	 * @return the title
+	 */
+	public static String getTitle() {
+		return title;
+	}
 
 	/**
 	 * Gets the scene.
@@ -56,6 +68,16 @@ public enum GUIState {
 	 */
 	public static void setStage(final Stage stage) {
 		GUIState.stage = stage;
+	}
+
+	/**
+	 * Sets the title.
+	 *
+	 * @param title
+	 *            the new title
+	 */
+	public static void setTitle(final String title) {
+		GUIState.title = title;
 	}
 
 }
