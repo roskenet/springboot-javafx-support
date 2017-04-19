@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
@@ -25,41 +23,23 @@ import javafx.stage.StageStyle;
  */
 public abstract class AbstractJavaFxApplicationSupport extends Application {
 
-	/** The Constant LOGGER. */
-	private static final Log LOGGER = LogFactory.getLog(AbstractJavaFxApplicationSupport.class);
-
-	/** The saved args. */
 	private static String[] savedArgs = new String[0];
 
-	/** The saved initial view. */
 	private static Class<? extends AbstractFxmlView> savedInitialView;
 
-	/** The application context. */
 	private static ConfigurableApplicationContext applicationContext;
 
 	/** The splash screen. */
 	private static SplashScreen splashScreen;
 
-	/** The icons. */
 	private static List<Image> icons = new ArrayList<>();
 
-	/** The app ctx loaded. */
 	private final BooleanProperty appCtxLoaded = new SimpleBooleanProperty(false);
 
-	/**
-	 * Gets the stage.
-	 *
-	 * @return the stage
-	 */
 	public static Stage getStage() {
 		return GUIState.getStage();
 	}
 
-	/**
-	 * Gets the scene.
-	 *
-	 * @return the scene
-	 */
 	public static Scene getScene() {
 		return GUIState.getScene();
 	}

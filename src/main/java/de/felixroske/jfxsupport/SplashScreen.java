@@ -1,8 +1,5 @@
 package de.felixroske.jfxsupport;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import javafx.scene.Parent;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.ImageView;
@@ -17,10 +14,7 @@ import javafx.scene.layout.VBox;
  */
 public class SplashScreen {
 
-	/** The Constant LOGGER. */
-	private static final Log LOGGER = LogFactory.getLog(SplashScreen.class);
-
-	/** The default image. */
+	/** The path to the default imager absolute to classpath root. */
 	private static String DEFAULT_IMAGE = "/splash/javafx.png";
 
 	/**

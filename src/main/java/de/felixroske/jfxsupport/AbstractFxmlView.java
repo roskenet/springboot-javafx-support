@@ -10,8 +10,8 @@ import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -45,25 +45,18 @@ import javafx.scene.layout.AnchorPane;
  */
 public abstract class AbstractFxmlView implements ApplicationContextAware {
 
-	/** The Constant LOGGER. */
-	private static final Log LOGGER = LogFactory.getLog(AbstractFxmlView.class);
-
-	/** The presenter property. */
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractFxmlView.class);
+    
 	protected ObjectProperty<Object> presenterProperty;
 
-	/** The fxml loader. */
 	protected FXMLLoader fxmlLoader;
 
-	/** The bundle. */
 	protected ResourceBundle bundle;
 
-	/** The resource. */
 	protected URL resource;
 
-	/** The application context. */
 	private ApplicationContext applicationContext;
 
-	/** The fxml root. */
 	private String fxmlRoot;
 
 	/*
@@ -87,14 +80,11 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	 * Instantiates a new abstract fxml view.
 	 */
 	public AbstractFxmlView() {
-
 		LOGGER.debug("AbstractFxmlView construction");
 		// Set the root path to package path
 		final String filePathFromPackageName = determineFilePathFromPackageName();
 		setFxmlRootPath("/" + filePathFromPackageName);
-		// get annotation declaration
 		final FXMLView annotation = getFXMLAnnotation();
-		// get url resource from annotation, or by naming convention
 		resource = getURLResource(annotation);
 
 		presenterProperty = new SimpleObjectProperty<>();
@@ -234,7 +224,7 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	 * the access to its first child.
 	 *
 	 * @return the first child of the {@link AnchorPane} or null if there are no
-	 *         childrens available from this view.
+	 *         children available from this view.
 	 */
 	public Node getViewWithoutRootContainer() {
 
@@ -398,7 +388,7 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 		try {
 			return getBundle(name);
 		} catch (final MissingResourceException ex) {
-			LOGGER.warn("No resource bundle could be determined: " + ex.getMessage());
+			LOGGER.debug("No resource bundle could be determined: " + ex.getMessage());
 			return null;
 		}
 	}

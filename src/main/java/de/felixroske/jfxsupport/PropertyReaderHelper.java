@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.core.env.Environment;
 
 /**
@@ -16,17 +14,11 @@ import org.springframework.core.env.Environment;
  */
 public class PropertyReaderHelper {
 
-	/** The Constant LOGGER. */
-	private static final Log LOGGER = LogFactory.getLog(AbstractJavaFxApplicationSupport.class);
-
-	/**
-	 * Instantiates a new property reader helper.
-	 */
 	private PropertyReaderHelper() {
 	}
 
 	/**
-	 * Lookup in {@link Environment} a certain property.
+	 * Lookup in {@link Environment} a certain property or a list of properties.
 	 *
 	 * @param env
 	 *            the {@link Environment} context from which to
