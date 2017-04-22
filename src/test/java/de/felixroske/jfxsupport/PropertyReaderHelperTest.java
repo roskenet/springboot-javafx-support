@@ -1,6 +1,7 @@
 package de.felixroske.jfxsupport;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
@@ -15,77 +16,83 @@ import org.springframework.core.env.Environment;
 
 public class PropertyReaderHelperTest {
 
-    private Environment envArrayMock;
-    private Environment envSingleEntryMock;
+	private Environment envArrayMock;
+	private Environment envSingleEntryMock;
 
-    @Before
-    public void setUp() {
-        envArrayMock = Mockito.mock(Environment.class);
-        envSingleEntryMock = Mockito.mock(Environment.class);
-        // This is what Spring environment returns
-        // When we defined an array in of appicons: ('- entry_1' ... in the
-        // yaml):
-        when(envArrayMock.getProperty("entry")).thenReturn(null);
-        when(envArrayMock.getProperty("entry[0]")).thenReturn("entry_0");
-        when(envArrayMock.getProperty("entry[1]")).thenReturn("entry_1");
-        when(envArrayMock.getProperty("entry[2]")).thenReturn("entry_2");
+	@Before
+	public void setUp() {
+		envArrayMock = Mockito.mock(Environment.class);
+		envSingleEntryMock = Mockito.mock(Environment.class);
+		// This is what Spring environment returns
+		// When we defined an array in of appicons: ('- entry_1' ... in the
+		// yaml):
+		when(envArrayMock.getProperty("entry")).thenReturn(null);
+		when(envArrayMock.getProperty("entry[0]")).thenReturn("entry_0");
+		when(envArrayMock.getProperty("entry[1]")).thenReturn("entry_1");
+		when(envArrayMock.getProperty("entry[2]")).thenReturn("entry_2");
 
-        // When there is a single entry:
-        when(envSingleEntryMock.getProperty("entry")).thenReturn("entry");
-        when(envSingleEntryMock.getProperty("entry[0]")).thenReturn(null);
-        when(envSingleEntryMock.getProperty(eq("stringentry"), eq(String.class))).thenReturn("entry");
-        
-    }
+		// When there is a single entry:
+		when(envSingleEntryMock.getProperty("entry")).thenReturn("entry");
+		when(envSingleEntryMock.getProperty("entry[0]")).thenReturn(null);
+		when(envSingleEntryMock.getProperty(eq("stringentry"), eq(String.class))).thenReturn("entry");
 
-    @Test
-    public void testGet_SingleValue() throws Exception {
-        List<String> list = PropertyReaderHelper.get(envSingleEntryMock, "entry");
-        assertThat(list, IsIterableContainingInAnyOrder.containsInAnyOrder("entry"));
-    }
+	}
 
-    @Test
-    public void testGet_MultipleValues() {
-        List<String> list = PropertyReaderHelper.get(envArrayMock, "entry");
-        assertThat(list, IsIterableContainingInAnyOrder.containsInAnyOrder("entry_0", "entry_1", "entry_2"));
-    }
+	@Test
+	public void testGet_SingleValue() throws Exception {
+		final List<String> list = PropertyReaderHelper.get(envSingleEntryMock, "entry");
+		assertThat(list, IsIterableContainingInAnyOrder.containsInAnyOrder("entry"));
+	}
 
-    @Test
-    public void testSetIfPresent_ExistingKey() throws Exception {
-        TestObject testObject = new TestObject();
+	@Test
+	public void testGet_MultipleValues() {
+		final List<String> list = PropertyReaderHelper.get(envArrayMock, "entry");
+		assertThat(list, IsIterableContainingInAnyOrder.containsInAnyOrder("entry_0", "entry_1", "entry_2"));
+	}
 
-        PropertyReaderHelper.setIfPresent(envSingleEntryMock, "stringentry", String.class, testObject::setStringEntry);
+	@Test
+	public void testSetIfPresent_ExistingKey() throws Exception {
+		final TestObject testObject = new TestObject();
 
-        assertThat(testObject.getStringEntry(), is("entry"));
-    }
+		PropertyReaderHelper.setIfPresent(envSingleEntryMock, "stringentry", String.class, testObject::setStringEntry);
 
-    @Test
-    public void testSetIfPresent_NonExistingKey() throws Exception {
-        TestObject testObject = new TestObject();
+		assertThat(testObject.getStringEntry(), is("entry"));
+	}
 
-        PropertyReaderHelper.setIfPresent(envSingleEntryMock, "no_entry", String.class, testObject::setStringEntry);
+	@Test
+	public void testSetIfPresent_NonExistingKey() throws Exception {
+		final TestObject testObject = new TestObject();
 
-        assertThat(testObject.getStringEntry(), is("UNSET"));
-    }
+		PropertyReaderHelper.setIfPresent(envSingleEntryMock, "no_entry", String.class, testObject::setStringEntry);
 
-    class TestObject {
-        private String stringEntry = "UNSET";
-        private Long longEntry = Long.valueOf(0);
+		assertThat(testObject.getStringEntry(), is("UNSET"));
+	}
 
-        public String getStringEntry() {
-            return stringEntry;
-        }
+	class TestObject {
+		private String stringEntry = "UNSET";
+		private Long longEntry = Long.valueOf(0);
 
-        public void setStringEntry(String theEntryValue) {
-            this.stringEntry = theEntryValue;
-        }
+		public String getStringEntry() {
+			return stringEntry;
+		}
 
-        public Long getLongEntry() {
-            return longEntry;
-        }
+		public void setStringEntry(final String theEntryValue) {
+			stringEntry = theEntryValue;
+		}
 
-        public void setLongEntry(Long longEntry) {
-            this.longEntry = longEntry;
-        }
-    }
+		public Long getLongEntry() {
+			return longEntry;
+		}
+
+		public void setLongEntry(final Long longEntry) {
+			this.longEntry = longEntry;
+		}
+	}
+
+	@Test
+	public void testDetermineFilePathFromPackageName() {
+		final String path = PropertyReaderHelper.determineFilePathFromPackageName(getClass());
+		assertEquals("/de/felixroske/jfxsupport/", path);
+	}
 
 }

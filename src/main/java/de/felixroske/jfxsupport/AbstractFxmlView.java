@@ -47,34 +47,17 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractFxmlView.class);
 
-	protected ObjectProperty<Object> presenterProperty;
+	private final ObjectProperty<Object> presenterProperty;
 
-	protected FXMLLoader fxmlLoader;
+	private final ResourceBundle bundle;
 
-	protected ResourceBundle bundle;
+	private final URL resource;
 
-	protected URL resource;
+	private FXMLLoader fxmlLoader;
 
 	private ApplicationContext applicationContext;
 
 	private String fxmlRoot;
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * org.springframework.context.ApplicationContextAware#setApplicationContext
-	 * (org.springframework.context.ApplicationContext)
-	 */
-	@Override
-	public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
-
-		if (this.applicationContext != null) {
-			return;
-		}
-
-		this.applicationContext = applicationContext;
-	}
 
 	/**
 	 * Instantiates a new abstract fxml view.
@@ -82,8 +65,8 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	public AbstractFxmlView() {
 		LOGGER.debug("AbstractFxmlView construction");
 		// Set the root path to package path
-		final String filePathFromPackageName = determineFilePathFromPackageName();
-		setFxmlRootPath("/" + filePathFromPackageName);
+		final String filePathFromPackageName = PropertyReaderHelper.determineFilePathFromPackageName(getClass());
+		setFxmlRootPath(filePathFromPackageName);
 		final FXMLView annotation = getFXMLAnnotation();
 		resource = getURLResource(annotation);
 
@@ -108,15 +91,6 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	}
 
 	/**
-	 * Determine file path from package name.
-	 *
-	 * @return the string
-	 */
-	private String determineFilePathFromPackageName() {
-		return getClass().getPackage().getName().replace('.', '/') + "/";
-	}
-
-	/**
 	 * Gets the {@link FXMLView} annotation from inheriting class.
 	 *
 	 * @return the FXML annotation
@@ -136,6 +110,23 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	 */
 	private Object createControllerForType(final Class<?> type) {
 		return applicationContext.getBean(type);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * org.springframework.context.ApplicationContextAware#setApplicationContext
+	 * (org.springframework.context.ApplicationContext)
+	 */
+	@Override
+	public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
+
+		if (this.applicationContext != null) {
+			return;
+		}
+
+		this.applicationContext = applicationContext;
 	}
 
 	/**
@@ -163,7 +154,7 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	 * @throws IllegalStateException
 	 *             the illegal state exception
 	 */
-	FXMLLoader loadSynchronously(final URL resource, final ResourceBundle bundle) throws IllegalStateException {
+	private FXMLLoader loadSynchronously(final URL resource, final ResourceBundle bundle) throws IllegalStateException {
 
 		final FXMLLoader loader = new FXMLLoader(resource, bundle);
 		loader.setControllerFactory(this::createControllerForType);
@@ -180,7 +171,7 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	/**
 	 * Ensure fxml loader initialized.
 	 */
-	void ensureFxmlLoaderInitialized() {
+	private void ensureFxmlLoaderInitialized() {
 
 		if (fxmlLoader != null) {
 			return;
@@ -333,7 +324,7 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	 *            the suffix to append
 	 * @return the conventional name with stripped ending
 	 */
-	protected String getConventionalName(final String ending) {
+	private String getConventionalName(final String ending) {
 		return getConventionalName() + ending;
 	}
 
@@ -343,7 +334,7 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	 * @return the name of the view without the "View" prefix in lowerCase. For
 	 *         AirhacksView just airhacks is going to be returned.
 	 */
-	protected String getConventionalName() {
+	private String getConventionalName() {
 		return stripEnding(getClass().getSimpleName().toLowerCase());
 	}
 
@@ -352,7 +343,7 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	 *
 	 * @return the bundle name
 	 */
-	String getBundleName() {
+	private String getBundleName() {
 		final FXMLView annotation = getFXMLAnnotation();
 		if (!StringUtils.isEmpty(annotation)) {
 			final String lbundle = annotation.bundle();
@@ -372,7 +363,7 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	 *            the clazz
 	 * @return the string
 	 */
-	static String stripEnding(final String clazz) {
+	private static String stripEnding(final String clazz) {
 
 		if (!clazz.endsWith("view")) {
 			return clazz;
@@ -396,10 +387,10 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	}
 
 	/**
-	 * Gets the resource bundle.
+	 * Gets the resource bundle or returns null.
 	 *
 	 * @param name
-	 *            the name
+	 *            the name of the resource bundle.
 	 * @return the resource bundle
 	 */
 	private ResourceBundle getResourceBundle(final String name) {
