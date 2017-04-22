@@ -45,8 +45,8 @@ import javafx.scene.layout.AnchorPane;
  */
 public abstract class AbstractFxmlView implements ApplicationContextAware {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractFxmlView.class);
-    
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractFxmlView.class);
+
 	protected ObjectProperty<Object> presenterProperty;
 
 	protected FXMLLoader fxmlLoader;
@@ -89,7 +89,6 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 
 		presenterProperty = new SimpleObjectProperty<>();
 		bundle = getResourceBundle(getBundleName());
-		LOGGER.debug(toString());
 	}
 
 	/**
@@ -252,14 +251,7 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 
 		// TODO refactor me!
 		final FXMLView annotation = getFXMLAnnotation();
-		if (annotation != null && annotation.css().length > 0) {
-			for (final String cssFile : annotation.css()) {
-				final URL uri = getClass().getResource(cssFile);
-				final String uriToCss = uri.toExternalForm();
-				parent.getStylesheets().add(uriToCss);
-			}
-			return;
-		}
+		addCSSFromAnnotation(parent, annotation);
 
 		final URL uri = getClass().getResource(getStyleSheetName());
 		if (uri == null) {
@@ -268,6 +260,29 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 
 		final String uriToCss = uri.toExternalForm();
 		parent.getStylesheets().add(uriToCss);
+	}
+
+	/**
+	 * Adds the CSS from annotation to parent.
+	 *
+	 * @param parent
+	 *            the parent
+	 * @param annotation
+	 *            the annotation
+	 */
+	private void addCSSFromAnnotation(final Parent parent, final FXMLView annotation) {
+		if (annotation != null && annotation.css().length > 0) {
+			for (final String cssFile : annotation.css()) {
+				final URL uri = getClass().getResource(cssFile);
+				if (uri != null) {
+					final String uriToCss = uri.toExternalForm();
+					parent.getStylesheets().add(uriToCss);
+					LOGGER.debug("css file added to parent: {}", cssFile);
+				} else {
+					LOGGER.warn("referenced {} css file could not be located", cssFile);
+				}
+			}
+		}
 	}
 
 	/**
@@ -338,12 +353,15 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	 * @return the bundle name
 	 */
 	String getBundleName() {
-		// TODO refactor me!
 		final FXMLView annotation = getFXMLAnnotation();
 		if (!StringUtils.isEmpty(annotation)) {
-			return annotation.bundle();
+			final String lbundle = annotation.bundle();
+			LOGGER.debug("Annotated bundle: {}", lbundle);
+			return lbundle;
 		} else {
-			return getClass().getPackage().getName() + "." + getConventionalName();
+			final String lbundle = getClass().getPackage().getName() + "." + getConventionalName();
+			LOGGER.debug("Bundle: {} based on conventional name.", lbundle);
+			return lbundle;
 		}
 	}
 
@@ -388,7 +406,7 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 		try {
 			return getBundle(name);
 		} catch (final MissingResourceException ex) {
-			LOGGER.debug("No resource bundle could be determined: " + ex.getMessage());
+			LOGGER.error("No resource bundle could be determined: " + ex.getMessage());
 			return null;
 		}
 	}
