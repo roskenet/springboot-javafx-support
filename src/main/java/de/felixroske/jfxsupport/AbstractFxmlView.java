@@ -394,7 +394,7 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 		try {
 			return getBundle(name);
 		} catch (final MissingResourceException ex) {
-			LOGGER.error("No resource bundle could be determined: " + ex.getMessage());
+			LOGGER.debug("No resource bundle could be determined: " + ex.getMessage());
 			return null;
 		}
 	}
