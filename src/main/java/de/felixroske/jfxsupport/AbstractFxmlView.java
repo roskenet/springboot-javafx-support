@@ -308,7 +308,7 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	 * @param presenterConsumer
 	 *            listener for the presenter construction
 	 */
-	public void getPresenter(final Consumer<Object> presenterConsumer) {
+	public void addListenerToPresenter(final Consumer<Object> presenterConsumer) {
 
 		presenterProperty.addListener(
 				(final ObservableValue<? extends Object> o, final Object oldValue, final Object newValue) -> {
