@@ -192,6 +192,7 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 
 		final Parent parent = fxmlLoader.getRoot();
 		addCSSIfAvailable(parent);
+		LOGGER.debug(toString()); // here all members should be available.
 		return parent;
 	}
 
@@ -410,7 +411,8 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	@Override
 	public String toString() {
 		return "AbstractFxmlView [presenterProperty=" + presenterProperty + ", bundle=" + bundle + ", resource="
-				+ resource + ", fxmlRoot=" + fxmlRoot + "]";
+				+ resource + ", fxmlView=" + fxmlView + ", fxmlLoader=" + fxmlLoader + ", applicationContext="
+				+ applicationContext + ", fxmlRoot=" + fxmlRoot + "]";
 	}
 
 }
