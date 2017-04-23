@@ -53,6 +53,8 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 
 	private final URL resource;
 
+	private final FXMLView annotation;
+
 	private FXMLLoader fxmlLoader;
 
 	private ApplicationContext applicationContext;
@@ -67,9 +69,8 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 		// Set the root path to package path
 		final String filePathFromPackageName = PropertyReaderHelper.determineFilePathFromPackageName(getClass());
 		setFxmlRootPath(filePathFromPackageName);
-		final FXMLView annotation = getFXMLAnnotation();
+		annotation = getFXMLAnnotation();
 		resource = getURLResource(annotation);
-
 		presenterProperty = new SimpleObjectProperty<>();
 		bundle = getResourceBundle(getBundleName());
 	}
@@ -240,8 +241,6 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 			list.forEach(css -> parent.getStylesheets().add(getClass().getResource(css).toExternalForm()));
 		}
 
-		// TODO refactor me!
-		final FXMLView annotation = getFXMLAnnotation();
 		addCSSFromAnnotation(parent, annotation);
 
 		final URL uri = getClass().getResource(getStyleSheetName());
@@ -344,7 +343,6 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	 * @return the bundle name
 	 */
 	private String getBundleName() {
-		final FXMLView annotation = getFXMLAnnotation();
 		if (!StringUtils.isEmpty(annotation)) {
 			final String lbundle = annotation.bundle();
 			LOGGER.debug("Annotated bundle: {}", lbundle);
