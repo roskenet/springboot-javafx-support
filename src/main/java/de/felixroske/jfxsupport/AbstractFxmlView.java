@@ -53,7 +53,7 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 
 	private final URL resource;
 
-	private final FXMLView annotation;
+	private final FXMLView fxmlView;
 
 	private FXMLLoader fxmlLoader;
 
@@ -69,8 +69,8 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 		// Set the root path to package path
 		final String filePathFromPackageName = PropertyReaderHelper.determineFilePathFromPackageName(getClass());
 		setFxmlRootPath(filePathFromPackageName);
-		annotation = getFXMLAnnotation();
-		resource = getURLResource(annotation);
+		fxmlView = getFXMLAnnotation();
+		resource = getURLResource();
 		presenterProperty = new SimpleObjectProperty<>();
 		bundle = getResourceBundle(getBundleName());
 	}
@@ -79,13 +79,11 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	 * Gets the URL resource. This will be derived from applied annotation value
 	 * or from naming convention.
 	 *
-	 * @param annotation
-	 *            the annotation as defined by inheriting class.
 	 * @return the URL resource
 	 */
-	private URL getURLResource(final FXMLView annotation) {
-		if (annotation != null && !annotation.value().equals("")) {
-			return getClass().getResource(annotation.value());
+	private URL getURLResource() {
+		if (fxmlView != null && !fxmlView.value().equals("")) {
+			return getClass().getResource(fxmlView.value());
 		} else {
 			return getClass().getResource(getFxmlPath());
 		}
@@ -241,7 +239,7 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 			list.forEach(css -> parent.getStylesheets().add(getClass().getResource(css).toExternalForm()));
 		}
 
-		addCSSFromAnnotation(parent, annotation);
+		addCSSFromAnnotation(parent);
 
 		final URL uri = getClass().getResource(getStyleSheetName());
 		if (uri == null) {
@@ -260,9 +258,9 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	 * @param annotation
 	 *            the annotation
 	 */
-	private void addCSSFromAnnotation(final Parent parent, final FXMLView annotation) {
-		if (annotation != null && annotation.css().length > 0) {
-			for (final String cssFile : annotation.css()) {
+	private void addCSSFromAnnotation(final Parent parent) {
+		if (fxmlView != null && fxmlView.css().length > 0) {
+			for (final String cssFile : fxmlView.css()) {
 				final URL uri = getClass().getResource(cssFile);
 				if (uri != null) {
 					final String uriToCss = uri.toExternalForm();
@@ -343,8 +341,8 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	 * @return the bundle name
 	 */
 	private String getBundleName() {
-		if (!StringUtils.isEmpty(annotation)) {
-			final String lbundle = annotation.bundle();
+		if (!StringUtils.isEmpty(fxmlView)) {
+			final String lbundle = fxmlView.bundle();
 			LOGGER.debug("Annotated bundle: {}", lbundle);
 			return lbundle;
 		} else {
