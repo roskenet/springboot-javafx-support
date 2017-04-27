@@ -232,7 +232,7 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	 * @param parent
 	 *            the parent
 	 */
-	void addCSSIfAvailable(final Parent parent) {
+	private void addCSSIfAvailable(final Parent parent) {
 
 		// Read global css when available:
 		final List<String> list = PropertyReaderHelper.get(applicationContext.getEnvironment(), "javafx.css");
@@ -361,7 +361,7 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	 *         <PATH>/airhacks.fxml.
 	 */
 
-	final String getFxmlPath() {
+	private final String getFxmlPath() {
 		final String fxmlPath = fxmlRoot + getConventionalName(".fxml");
 		LOGGER.debug("Determined fxmlPath: " + fxmlPath);
 		return fxmlPath;
