@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import org.springframework.core.env.Environment;
+import org.springframework.util.StringUtils;
 
 /**
  * The utility PropertyReaderHelper.
@@ -78,5 +79,16 @@ public class PropertyReaderHelper {
 	 */
 	public static final String determineFilePathFromPackageName(final Class<?> clazz) {
 		return "/" + clazz.getPackage().getName().replace('.', '/') + "/";
+	}
+
+	/**
+	 * Strip ending.
+	 *
+	 * @param clazz
+	 *            the clazz
+	 * @return the string
+	 */
+	public static String stripEnding(final String clazz) {
+		return StringUtils.delete(clazz, "view");
 	}
 }

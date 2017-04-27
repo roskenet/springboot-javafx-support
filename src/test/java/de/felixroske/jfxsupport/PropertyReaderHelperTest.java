@@ -95,4 +95,16 @@ public class PropertyReaderHelperTest {
 		assertEquals("/de/felixroske/jfxsupport/", path);
 	}
 
+	@Test
+	public void testStripEnding() {
+		final String clazz = "mytestview";
+		final String retVal = PropertyReaderHelper.stripEnding(clazz);
+		assertEquals("mytest", retVal);
+		if (clazz.endsWith("view")) {
+			// previous solution of stripEnding method checked against outcome
+			// of new
+			assertEquals(retVal, clazz.substring(0, clazz.lastIndexOf("view")));
+		}
+	}
+
 }

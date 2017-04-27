@@ -333,7 +333,7 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	 *         AirhacksView just airhacks is going to be returned.
 	 */
 	private String getConventionalName() {
-		return stripEnding(getClass().getSimpleName().toLowerCase());
+		return PropertyReaderHelper.stripEnding(getClass().getSimpleName().toLowerCase());
 	}
 
 	/**
@@ -351,22 +351,6 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 			LOGGER.debug("Bundle: {} based on conventional name.", lbundle);
 			return lbundle;
 		}
-	}
-
-	/**
-	 * Strip ending.
-	 *
-	 * @param clazz
-	 *            the clazz
-	 * @return the string
-	 */
-	private static String stripEnding(final String clazz) {
-
-		if (!clazz.endsWith("view")) {
-			return clazz;
-		}
-
-		return clazz.substring(0, clazz.lastIndexOf("view"));
 	}
 
 	/**
