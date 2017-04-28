@@ -1,4 +1,4 @@
-package de.felixroske.jfxsupport;
+package net.springjfx;
 
 import static java.util.ResourceBundle.getBundle;
 

@@ -1,4 +1,4 @@
-package de.felixroske.jfxsupport;
+package net.springjfx;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
@@ -92,7 +92,7 @@ public class PropertyReaderHelperTest {
 	@Test
 	public void testDetermineFilePathFromPackageName() {
 		final String path = PropertyReaderHelper.determineFilePathFromPackageName(getClass());
-		assertEquals("/de/felixroske/jfxsupport/", path);
+		assertEquals("/net/springjfx/", path);
 	}
 
 	@Test

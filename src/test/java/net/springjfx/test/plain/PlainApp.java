@@ -1,8 +1,8 @@
-package jfxtest.plain;
+package net.springjfx.test.plain;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import de.felixroske.jfxsupport.AbstractJavaFxApplicationSupport;
+import net.springjfx.AbstractJavaFxApplicationSupport;
 
 @SpringBootApplication
 public class PlainApp extends AbstractJavaFxApplicationSupport{

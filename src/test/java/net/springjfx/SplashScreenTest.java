@@ -1,4 +1,4 @@
-package de.felixroske.jfxsupport;
+package net.springjfx;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import javafx.scene.Parent;
 import javafx.scene.layout.Pane;
+import net.springjfx.SplashScreen;
 
 public class SplashScreenTest {
 

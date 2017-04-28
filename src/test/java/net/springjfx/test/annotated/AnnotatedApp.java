@@ -1,8 +1,8 @@
-package jfxtest.annotated;
+package net.springjfx.test.annotated;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import de.felixroske.jfxsupport.AbstractJavaFxApplicationSupport;
+import net.springjfx.AbstractJavaFxApplicationSupport;
 
 @SpringBootApplication
 public class AnnotatedApp extends AbstractJavaFxApplicationSupport{

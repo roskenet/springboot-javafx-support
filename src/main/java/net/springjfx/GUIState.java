@@ -1,4 +1,4 @@
-package de.felixroske.jfxsupport;
+package net.springjfx;
 
 import javafx.scene.Scene;
 import javafx.stage.Stage;

@@ -1,4 +1,4 @@
-package jfxtest.annotated;
+package net.springjfx.test.annotated;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.isA;
@@ -12,9 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import de.felixroske.jfxsupport.AbstractFxmlView;
-import de.roskenet.jfxsupport.test.GuiTest;
 import javafx.scene.control.Button;
+import net.springjfx.AbstractFxmlView;
+import net.springjfx.test.GuiTest;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class AnnotatedViewTest extends GuiTest {

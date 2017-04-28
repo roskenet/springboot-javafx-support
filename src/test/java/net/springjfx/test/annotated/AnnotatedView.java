@@ -1,7 +1,7 @@
-package jfxtest.annotated;
+package net.springjfx.test.annotated;
 
-import de.felixroske.jfxsupport.AbstractFxmlView;
-import de.felixroske.jfxsupport.FXMLView;
+import net.springjfx.AbstractFxmlView;
+import net.springjfx.FXMLView;
 
 @FXMLView(value="/annotated/fxml/annotated.fxml", 
           bundle="annotated.i18n.annotated",
