@@ -1,0 +1,16 @@
+1.3.21 Add HostServices:
+- Make HostServices available in GUIState.
+
+1.3.9 Add splash screen:
+- Add a configurable splash screen while app starts app.
+
+1.2.x Add application icons:
+- Add a standard app icon set.
+- Initial window size and title is configurable by properties.
+
+1.1.0 Introduce Abstract Classes and annotations:
+- Use Adam Bien's and Thomas Darimont's abstract class for view.
+- Add annotations to configure view and controller classes.
+
+1.0.0 Spring Framework Integration:
+- Simple starter class to use spring CDI in JavaFX projects.
