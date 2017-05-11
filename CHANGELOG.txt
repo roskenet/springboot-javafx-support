@@ -1,3 +1,6 @@
+1.3.22 Interaction with other JVM languages
+- Make launchApp public.
+
 1.3.21 Add HostServices:
 - Make HostServices available in GUIState.
 
