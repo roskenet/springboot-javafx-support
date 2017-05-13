@@ -1,5 +1,6 @@
 package de.felixroske.jfxsupport;
 
+import javafx.application.HostServices;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -18,6 +19,8 @@ public enum GUIState {
 	private static Stage stage;
 
 	private static String title;
+	
+	private static HostServices hostServices;
 
 	public static String getTitle() {
 		return title;
@@ -42,5 +45,15 @@ public enum GUIState {
 	public static void setTitle(final String title) {
 		GUIState.title = title;
 	}
+
+        public static HostServices getHostServices() {
+            return hostServices;
+        }
+
+        public static void setHostServices(HostServices hostServices) {
+            GUIState.hostServices = hostServices;
+        }
+	
+	
 
 }

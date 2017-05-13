@@ -8,6 +8,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import javafx.application.Application;
+import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -43,6 +44,10 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 	public static Scene getScene() {
 		return GUIState.getScene();
 	}
+	
+	public static HostServices getAppHostServices() {
+            return GUIState.getHostServices();
+        }
 
 	/*
 	 * (non-Javadoc)
@@ -77,6 +82,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 	@Override
 	public void start(final Stage stage) throws Exception {
 		GUIState.setStage(stage);
+		GUIState.setHostServices(this.getHostServices());
 		final Stage splashStage = new Stage(StageStyle.UNDECORATED);
 
 		if (AbstractJavaFxApplicationSupport.splashScreen.visible()) {
@@ -205,7 +211,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 	 * @param args
 	 *            the args
 	 */
-	protected static void launchApp(final Class<? extends AbstractJavaFxApplicationSupport> appClass,
+	public static void launchApp(final Class<? extends AbstractJavaFxApplicationSupport> appClass,
 			final Class<? extends AbstractFxmlView> view, final String[] args) {
 		launchApp(appClass, view, new SplashScreen(), args);
 	}
@@ -222,7 +228,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 	 * @param args
 	 *            the args
 	 */
-	protected static void launchApp(final Class<? extends AbstractJavaFxApplicationSupport> appClass,
+	public static void launchApp(final Class<? extends AbstractJavaFxApplicationSupport> appClass,
 			final Class<? extends AbstractFxmlView> view, final SplashScreen splashScreen, final String[] args) {
 		savedInitialView = view;
 		savedArgs = args;
@@ -234,5 +240,5 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 		}
 		Application.launch(appClass, args);
 	}
-
+	
 }
