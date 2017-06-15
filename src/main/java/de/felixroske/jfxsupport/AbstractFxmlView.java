@@ -393,8 +393,8 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	 */
 	private ResourceBundle getResourceBundle(final String name) {
 		try {
+			LOGGER.debug("Resource bundle: " + name);
 			return getBundle(name);
-                        LOGGER.debug("Resource bundle: " + name);
 		} catch (final MissingResourceException ex) {
 			LOGGER.debug("No resource bundle could be determined: " + ex.getMessage());
 			return null;
