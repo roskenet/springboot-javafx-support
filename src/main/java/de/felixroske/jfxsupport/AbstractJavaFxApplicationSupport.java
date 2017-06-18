@@ -1,12 +1,5 @@
 package de.felixroske.jfxsupport;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.ConfigurableApplicationContext;
-
 import javafx.application.Application;
 import javafx.application.HostServices;
 import javafx.application.Platform;
@@ -14,8 +7,15 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ConfigurableApplicationContext;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * The Class AbstractJavaFxApplicationSupport.
@@ -44,7 +44,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 	public static Scene getScene() {
 		return GUIState.getScene();
 	}
-	
+
 	public static HostServices getAppHostServices() {
             return GUIState.getHostServices();
         }
@@ -161,6 +161,31 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 	}
 
 	/**
+	 * Shows view in a new window.
+	 *
+	 * @param popupView view to show
+	 */
+	public static void popupView(final Class<? extends AbstractFxmlView> popupView)
+	{
+		popupView(popupView, new Stage());
+	}
+
+	/**
+	 * Shows view in a new window.
+	 *
+	 * @param popupView view to show
+	 * @param stage stage to be used for view
+	 */
+	public static void popupView(final Class<? extends AbstractFxmlView> popupView, final Stage stage)
+	{
+		final AbstractFxmlView view = applicationContext.getBean(popupView);
+
+		stage.initModality(Modality.APPLICATION_MODAL);
+		stage.setScene(new Scene(view.getView()));
+		stage.show();
+	}
+
+	/**
 	 * Apply env props to view.
 	 */
 	private static void applyEnvPropsToView() {
@@ -240,5 +265,5 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 		}
 		Application.launch(appClass, args);
 	}
-	
+
 }
