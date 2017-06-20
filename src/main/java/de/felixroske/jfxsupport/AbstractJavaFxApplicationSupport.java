@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
@@ -13,6 +15,8 @@ import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -23,6 +27,7 @@ import javafx.stage.StageStyle;
  * @author Felix Roske
  */
 public abstract class AbstractJavaFxApplicationSupport extends Application {
+    private static Logger LOGGER = LoggerFactory.getLogger(AbstractJavaFxApplicationSupport.class);
 
 	private static String[] savedArgs = new String[0];
 
@@ -145,19 +150,27 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 	 *            the new view
 	 */
 	public static void showView(final Class<? extends AbstractFxmlView> newView) {
-		final AbstractFxmlView view = applicationContext.getBean(newView);
+        try {
+            final AbstractFxmlView view = applicationContext.getBean(newView);
 
-		if (GUIState.getScene() == null) {
-			GUIState.setScene(new Scene(view.getView()));
-		} else {
-			GUIState.getScene().setRoot(view.getView());
-		}
-		GUIState.getStage().setScene(GUIState.getScene());
+            if (GUIState.getScene() == null) {
+                GUIState.setScene(new Scene(view.getView()));
+            } else {
+                GUIState.getScene().setRoot(view.getView());
+            }
+            GUIState.getStage().setScene(GUIState.getScene());
 
-		applyEnvPropsToView();
+            applyEnvPropsToView();
 
-		GUIState.getStage().getIcons().addAll(icons);
-		GUIState.getStage().show();
+            GUIState.getStage().getIcons().addAll(icons);
+            GUIState.getStage().show();
+        } catch (Throwable t) {
+            LOGGER.error("Failed to load application: ", t);
+            Alert alert = new Alert(AlertType.ERROR, "Oops! An unrecoverable error occured.\n" +
+                    "Please contact your software vendor.\n\n" +
+                    "The application will stop now.");
+            alert.showAndWait().ifPresent(response -> Platform.exit());
+        }
 	}
 
 	/**
