@@ -28,15 +28,18 @@ import javafx.scene.Parent;
 import javafx.scene.layout.AnchorPane;
 
 /**
- * This class is derived from Adam Bien's
+ * Base class for fxml-based view classes.
+ * 
+ * It is derived from Adam Bien's
  * <a href="http://afterburner.adam-bien.com/">afterburner.fx</a> project.
  * <p>
  * {@link AbstractFxmlView} is a stripped down version of <a href=
  * "https://github.com/AdamBien/afterburner.fx/blob/02f25fdde9629fcce50ea8ace5dec4f802958c8d/src/main/java/com/airhacks/afterburner/views/FXMLView.java"
  * >FXMLView</a> that provides DI for Java FX Controllers via Spring.
- *
- * Felix Roske (felix.roske@zalando.de) changed this to use annotation for fxml
- * in combination with Spring. path.
+ * </p>
+ * <p>
+ * Supports annotation driven creation of FXML based view beans with {@link FXMLView}
+ * </p>
  *
  * @author Thomas Darimont
  * @author Felix Roske

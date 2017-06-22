@@ -1,11 +1,16 @@
 package de.felixroske.jfxsupport;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javafx.application.Application;
 import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -23,6 +28,7 @@ import java.util.concurrent.CompletableFuture;
  * @author Felix Roske
  */
 public abstract class AbstractJavaFxApplicationSupport extends Application {
+    private static Logger LOGGER = LoggerFactory.getLogger(AbstractJavaFxApplicationSupport.class);
 
 	private static String[] savedArgs = new String[0];
 
@@ -71,7 +77,15 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 				icons.add(new Image(getClass().getResource("/icons/gear_64x64.png").toExternalForm()));
 			}
 			return ctx;
-		}).thenAccept(this::launchApplicationView);
+		}).whenComplete((ctx, throwable) -> {
+			if(throwable != null) {
+				LOGGER.error("Failed to load spring application context: ", throwable);
+				Platform.runLater(() -> showErrorAlert(throwable));
+			}
+			else {
+				launchApplicationView(ctx);
+			}
+		});
 	}
 
 	/*
@@ -100,7 +114,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 		};
 
 		synchronized (this) {
-			if (appCtxLoaded.get() == true) {
+			if (appCtxLoaded.get()) {
 				// Spring ContextLoader was faster
 				Platform.runLater(showMainAndCloseSplash);
 			} else {
@@ -145,19 +159,25 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 	 *            the new view
 	 */
 	public static void showView(final Class<? extends AbstractFxmlView> newView) {
-		final AbstractFxmlView view = applicationContext.getBean(newView);
+		try {
+			final AbstractFxmlView view = applicationContext.getBean(newView);
 
-		if (GUIState.getScene() == null) {
-			GUIState.setScene(new Scene(view.getView()));
-		} else {
-			GUIState.getScene().setRoot(view.getView());
+			if(GUIState.getScene() == null) {
+				GUIState.setScene(new Scene(view.getView()));
+			}
+			else {
+				GUIState.getScene().setRoot(view.getView());
+			}
+			GUIState.getStage().setScene(GUIState.getScene());
+
+			applyEnvPropsToView();
+
+			GUIState.getStage().getIcons().addAll(icons);
+			GUIState.getStage().show();
+		} catch(Throwable t) {
+			LOGGER.error("Failed to load application: ", t);
+			showErrorAlert(t);
 		}
-		GUIState.getStage().setScene(GUIState.getScene());
-
-		applyEnvPropsToView();
-
-		GUIState.getStage().getIcons().addAll(icons);
-		GUIState.getStage().show();
 	}
 
 	/**
@@ -183,6 +203,18 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 		stage.initModality(Modality.APPLICATION_MODAL);
 		stage.setScene(new Scene(view.getView()));
 		stage.show();
+	}
+
+	 * Show error alert that close app.
+	 *
+	 * @param throwable
+	 *            cause of error
+	 */
+	private static void showErrorAlert(Throwable throwable) {
+		Alert alert = new Alert(AlertType.ERROR, "Oops! An unrecoverable error occurred.\n" +
+				"Please contact your software vendor.\n\n" +
+				"The application will stop now.");
+		alert.showAndWait().ifPresent(response -> Platform.exit());
 	}
 
 	/**
