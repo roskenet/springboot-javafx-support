@@ -1,4 +1,4 @@
-1.3.23 Show error dialog on failed start
+1.3.25 Show error dialog on failed start
 
 1.3.22 Interaction with other JVM languages
 - Make launchApp public.
