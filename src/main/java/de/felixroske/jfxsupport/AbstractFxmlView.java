@@ -133,18 +133,8 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 		this.applicationContext = applicationContext;
 	}
 
-	/**
-	 * Sets the fxml root path.
-	 *
-	 * @param path
-	 *            the new fxml root path
-	 */
 	private void setFxmlRootPath(final String path) {
-		if (path.endsWith("/")) {
-			fxmlRoot = path;
-		} else {
-			fxmlRoot = path + "/";
-		}
+		fxmlRoot = path;
 	}
 
 	/**
