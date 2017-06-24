@@ -1,13 +1,7 @@
 package de.felixroske.jfxsupport;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.ConfigurableApplicationContext;
 
 import javafx.application.Application;
 import javafx.application.HostServices;
@@ -18,8 +12,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ConfigurableApplicationContext;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * The Class AbstractJavaFxApplicationSupport.
@@ -49,7 +50,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 	public static Scene getScene() {
 		return GUIState.getScene();
 	}
-	
+
 	public static HostServices getAppHostServices() {
             return GUIState.getHostServices();
         }
@@ -180,6 +181,30 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 	}
 
 	/**
+	 * Shows view in a new window.
+	 *
+	 * @param popupView view to show
+	 */
+	public static void popupView(final Class<? extends AbstractFxmlView> popupView)
+	{
+		popupView(popupView, new Stage());
+	}
+
+	/**
+	 * Shows view in a new window.
+	 *
+	 * @param popupView view to show
+	 * @param stage stage to be used for view
+	 */
+	public static void popupView(final Class<? extends AbstractFxmlView> popupView, final Stage stage)
+	{
+		final AbstractFxmlView view = applicationContext.getBean(popupView);
+
+		stage.initModality(Modality.APPLICATION_MODAL);
+		stage.setScene(new Scene(view.getView()));
+		stage.show();
+	}
+
 	 * Show error alert that close app.
 	 *
 	 * @param throwable
@@ -191,6 +216,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 				"The application will stop now.");
 		alert.showAndWait().ifPresent(response -> Platform.exit());
 	}
+
 	/**
 	 * Apply env props to view.
 	 */
@@ -271,5 +297,5 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 		}
 		Application.launch(appClass, args);
 	}
-	
+
 }
