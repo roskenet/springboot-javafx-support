@@ -9,8 +9,10 @@ This small library links Spring Boot with JavaFx 8. Let all your view and contro
 You'll find a set of example applications at `github <https://github.com/roskenet/spring-javafx-examples>`_ and check my `homepage <https://www.felixroske.de/page/programmierung/index.html>`_.
 In the example I use concrete classes everywhere. In a real world application you can (and should) of course use interfaces for views and controllers and let Spring do the magic to instantiate the right bean.
 
-0. Add the dependency
+0. Prerequisites 
 ---------------------
+You will at least need JDK1.8 patch level 40.
+
 You find the latest springboot-javafx-support library at `maven-central
 <http://search.maven.org/#artifactdetails|de.roskenet|springboot-javafx-support|1.3.15|jar>`_.
 

@@ -5,6 +5,8 @@
 # springboot-javafx-support
 Spring Boot and JavaFx - A perfect match!
 
+You will need at least JDK1.8 patch level 40.
+
 Find a step-by-step example here: https://www.felixroske.de/page/programmierung/index.html
 
 And a bunch of examples here: https://github.com/roskenet/spring-javafx-examples/
