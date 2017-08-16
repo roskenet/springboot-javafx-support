@@ -277,7 +277,6 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
      *            The FxmlView derived class that should be shown.
      * @param mode
      *            See {@code javafx.stage.Modality}.
-     * @return The newly created javafx.stage.Stage for further modification.
      */
     public static void showView(final Class<? extends AbstractFxmlView> window, final Modality mode) {
         final AbstractFxmlView view = applicationContext.getBean(window);
