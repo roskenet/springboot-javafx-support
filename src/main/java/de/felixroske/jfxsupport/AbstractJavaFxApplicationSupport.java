@@ -94,6 +94,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 	 */
 	@Override
 	public void start(final Stage stage) throws Exception {
+        
 		GUIState.setStage(stage);
 		GUIState.setHostServices(this.getHostServices());
 		final Stage splashStage = new Stage(StageStyle.UNDECORATED);
@@ -111,14 +112,25 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 				splashStage.setScene(null);
 			}
 		};
-
+	    // TODO: Doesn't work here!?
+	    final Runnable initSysytemtray = () -> {
+	        // app requests system tray support, do nothing in case platform doesn't support
+	        // it
+	        java.awt.Toolkit.getDefaultToolkit();
+	        if (!java.awt.SystemTray.isSupported()) {
+	            LOGGER.warn("System tray is not supported on this platform.");
+	        }
+	    };
+	    
 		synchronized (this) {
 			if (appCtxLoaded.get()) {
 				// Spring ContextLoader was faster
 				Platform.runLater(showMainAndCloseSplash);
+			    Platform.runLater(initSysytemtray);
 			} else {
 				appCtxLoaded.addListener((ov, oVal, nVal) -> {
 					Platform.runLater(showMainAndCloseSplash);
+	     		    Platform.runLater(initSysytemtray);
 				});
 			}
 		}
@@ -135,16 +147,14 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 		} else {
 			GUIState.getStage().initStyle(StageStyle.DECORATED);
 		}
-		// stage.hide();
-
 		showView(savedInitialView);
 	}
 
-	/**
+
+
+    /**
 	 * Launch application view.
 	 *
-	 * @param ctx
-	 *            the ctx
 	 */
 	private void launchApplicationView(final ConfigurableApplicationContext ctx) {
 		AbstractJavaFxApplicationSupport.applicationContext = ctx;

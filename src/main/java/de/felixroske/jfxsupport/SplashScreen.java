@@ -7,14 +7,14 @@ import javafx.scene.layout.VBox;
 
 /**
  * A default standard splash pane implementation Subclass it and override it's
- * methods to customize with your own behavior.
+ * methods to customize with your own behavior. Be aware that you can not use
+ * Spring features here yet.
  *
  * @author Felix Roske
  * @author Andreas Jay
  */
 public class SplashScreen {
 
-	/** The path to the default imager absolute to classpath root. */
 	private static String DEFAULT_IMAGE = "/splash/javafx.png";
 
 	/**
