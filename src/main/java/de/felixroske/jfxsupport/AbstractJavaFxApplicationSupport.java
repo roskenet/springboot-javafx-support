@@ -1,5 +1,6 @@
 package de.felixroske.jfxsupport;
 
+import java.awt.SystemTray;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -112,25 +113,14 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 				splashStage.setScene(null);
 			}
 		};
-	    // TODO: Doesn't work here!?
-	    final Runnable initSysytemtray = () -> {
-	        // app requests system tray support, do nothing in case platform doesn't support
-	        // it
-	        java.awt.Toolkit.getDefaultToolkit();
-	        if (!java.awt.SystemTray.isSupported()) {
-	            LOGGER.warn("System tray is not supported on this platform.");
-	        }
-	    };
 	    
 		synchronized (this) {
 			if (appCtxLoaded.get()) {
 				// Spring ContextLoader was faster
 				Platform.runLater(showMainAndCloseSplash);
-			    Platform.runLater(initSysytemtray);
 			} else {
 				appCtxLoaded.addListener((ov, oVal, nVal) -> {
 					Platform.runLater(showMainAndCloseSplash);
-	     		    Platform.runLater(initSysytemtray);
 				});
 			}
 		}
@@ -147,6 +137,9 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 		} else {
 			GUIState.getStage().initStyle(StageStyle.DECORATED);
 		}
+		
+		beforeInitialView();
+		
 		showView(savedInitialView);
 	}
 
@@ -170,7 +163,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 	public static void showView(final Class<? extends AbstractFxmlView> newView) {
 		try {
 			final AbstractFxmlView view = applicationContext.getBean(newView);
-
+			
 			if(GUIState.getScene() == null) {
 				GUIState.setScene(new Scene(view.getView()));
 			}
@@ -183,6 +176,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 
 			GUIState.getStage().getIcons().addAll(icons);
 			GUIState.getStage().show();
+
 		} catch(Throwable t) {
 			LOGGER.error("Failed to load application: ", t);
 			showErrorAlert(t);
@@ -254,6 +248,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 	 */
 	public static void launchApp(final Class<? extends AbstractJavaFxApplicationSupport> appClass,
 			final Class<? extends AbstractFxmlView> view, final String[] args) {
+
 		launchApp(appClass, view, new SplashScreen(), args);
 	}
 
@@ -279,7 +274,26 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 		} else {
 			AbstractJavaFxApplicationSupport.splashScreen = new SplashScreen();
 		}
+		
+        if(SystemTray.isSupported()) {
+            GUIState.setSystemTray(SystemTray.getSystemTray());
+         }
+        
 		Application.launch(appClass, args);
+	}
+
+	/**
+	 * Gets called after full initialization of Spring application context
+	 * and JavaFX platform right before the initial view is shown.
+	 * Override this method as a hook to add special code for your app. Especially meant to 
+	 * add AWT code to add a system tray icon and behavior by calling 
+	 * GUIState.getSystemTray() and modifying it accordingly.
+	 * 
+	 * By default noop.
+	 * 
+	 */
+	public void beforeInitialView() {
+	    
 	}
 	
 }

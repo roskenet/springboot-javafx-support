@@ -1,3 +1,8 @@
+1.4.0 Add beforeInitialView() lifecycle method.
+- Override this to add special code (initially meant to 
+  manipulate the platform's system tray).
+- Added getSystemTray in GUIState.
+
 1.3.25 Show error dialog on failed start
 
 1.3.22 Interaction with other JVM languages
