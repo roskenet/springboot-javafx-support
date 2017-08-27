@@ -5,6 +5,8 @@ import java.lang.annotation.RetentionPolicy;
 
 import org.springframework.stereotype.Component;
 
+import javafx.stage.StageStyle;
+
 /**
  * The annotation {@link FXMLView} indicates a class to be used in the context
  * of an JavaFX view. Such classes are used in combination with fxml markup
@@ -31,9 +33,22 @@ public @interface FXMLView {
 	String[] css() default {};
 
 	/**
-	 * Resource bundle to be used with this view..
+	 * Resource bundle to be used with this view.
 	 *
 	 * @return the string of such resource bundle.
 	 */
 	String bundle() default "";
+	
+	/**
+	 * The default title for this view for modal.
+	 * 
+	 * @return The default title string.
+	 */
+	String title() default "";
+	
+	/**
+	 * The style to be applied to the underlying stage 
+	 * when using this view as a modal window.
+	 */
+	String stageStyle() default "UTILITY";
 }

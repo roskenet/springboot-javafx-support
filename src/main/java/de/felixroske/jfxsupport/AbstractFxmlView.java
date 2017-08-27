@@ -27,6 +27,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.StageStyle;
 
 /**
  * Base class for fxml-based view classes.
@@ -235,7 +236,7 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 			list.forEach(css -> parent.getStylesheets().add(getClass().getResource(css).toExternalForm()));
 		}
 
-		addCSSFromAnnotation(parent, annotation);
+		addCSSFromAnnotation(parent);
 
 		final URL uri = getClass().getResource(getStyleSheetName());
 		if (uri == null) {
@@ -254,7 +255,7 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	 * @param annotation
 	 *            the annotation
 	 */
-	private void addCSSFromAnnotation(final Parent parent, final FXMLView annotation) {
+	private void addCSSFromAnnotation(final Parent parent) {
 		if (annotation != null && annotation.css().length > 0) {
 			for (final String cssFile : annotation.css()) {
 				final URL uri = getClass().getResource(cssFile);
@@ -269,6 +270,22 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 		}
 	}
 
+	/*
+	 * Gets the default title for to be shown in a (un)modal window. 
+	 * 
+	 */
+    String getDefaultTitle() {
+        return annotation.title();
+    }
+    
+    /*
+     * Gets the default style for a (un)modal window.
+     */
+    StageStyle getDefaultStyle() {
+        final String style = annotation.stageStyle();
+        return StageStyle.valueOf(style.toUpperCase());
+    }
+	
 	/**
 	 * Gets the style sheet name.
 	 *

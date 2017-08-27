@@ -19,6 +19,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -30,30 +31,63 @@ import javafx.stage.StageStyle;
 public abstract class AbstractJavaFxApplicationSupport extends Application {
     private static Logger LOGGER = LoggerFactory.getLogger(AbstractJavaFxApplicationSupport.class);
 
-	private static String[] savedArgs = new String[0];
+    private static String[] savedArgs = new String[0];
 
-	private static Class<? extends AbstractFxmlView> savedInitialView;
+    private static Class<? extends AbstractFxmlView> savedInitialView;
 
-	private static ConfigurableApplicationContext applicationContext;
+    private static ConfigurableApplicationContext applicationContext;
 
-	/** The splash screen. */
-	private static SplashScreen splashScreen;
+    private static SplashScreen splashScreen;
 
-	private static List<Image> icons = new ArrayList<>();
+    private static List<Image> icons = new ArrayList<>();
 
-	private final BooleanProperty appCtxLoaded = new SimpleBooleanProperty(false);
+    private final BooleanProperty appCtxLoaded = new SimpleBooleanProperty(false);
 
-	public static Stage getStage() {
-		return GUIState.getStage();
-	}
+    public static Stage getStage() {
+        return GUIState.getStage();
+    }
 
-	public static Scene getScene() {
-		return GUIState.getScene();
-	}
-	
-	public static HostServices getAppHostServices() {
-            return GUIState.getHostServices();
+    public static Scene getScene() {
+        return GUIState.getScene();
+    }
+
+    public static HostServices getAppHostServices() {
+        return GUIState.getHostServices();
+    }
+    
+    public static SystemTray getSystemTray() {
+        return GUIState.getSystemTray();
+    }
+
+    /**
+     * 
+     * @param window
+     *            The FxmlView derived class that should be shown.
+     * @param mode
+     *            See {@code javafx.stage.Modality}.
+     */
+    public static void showView(final Class<? extends AbstractFxmlView> window, final Modality mode) {
+        final AbstractFxmlView view = applicationContext.getBean(window);
+        Stage newStage = new Stage();
+        
+        Scene newScene;
+        if(view.getView().getScene() != null) {            
+            // This view was already shown so
+            // we have a scene for it and use this one.
+            newScene = view.getView().getScene();
         }
+        else { 
+            newScene = new Scene(view.getView());
+        }
+        
+        newStage.setScene(newScene);
+        newStage.initModality(mode);
+        newStage.initOwner(getStage());
+        newStage.setTitle(view.getDefaultTitle());
+        newStage.initStyle(view.getDefaultStyle());
+
+        newStage.showAndWait();
+    }
 
 	/*
 	 * (non-Javadoc)
@@ -295,5 +329,4 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 	public void beforeInitialView() {
 	    
 	}
-	
 }
