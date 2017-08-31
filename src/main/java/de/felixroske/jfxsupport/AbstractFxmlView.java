@@ -282,8 +282,7 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
      * Gets the default style for a (un)modal window.
      */
     StageStyle getDefaultStyle() {
-        final String style = annotation.stageStyle();
-        return StageStyle.valueOf(style.toUpperCase());
+        return annotation.stageStyle();
     }
 	
 	/**
