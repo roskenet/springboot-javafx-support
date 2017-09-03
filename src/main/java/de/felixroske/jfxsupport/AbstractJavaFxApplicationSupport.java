@@ -89,38 +89,52 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
         newStage.showAndWait();
     }
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see javafx.application.Application#init()
-	 */
-	@Override
-	public void init() throws Exception {
-		CompletableFuture.supplyAsync(() -> {
-			final ConfigurableApplicationContext ctx = SpringApplication.run(this.getClass(), savedArgs);
+  private void loadIcons(ConfigurableApplicationContext ctx)
+  {
+    try {
+      final List<String> fsImages = PropertyReaderHelper.get(ctx.getEnvironment(), "javafx.appicons");
 
-			final List<String> fsImages = PropertyReaderHelper.get(ctx.getEnvironment(), "javafx.appicons");
+      if (!fsImages.isEmpty()) {
+        fsImages.forEach((s) ->
+            {
+              Image img =  new Image(getClass().getResource(s).toExternalForm());
+              icons.add(img);
+            }
+        );
+      } else { // add factory images
+        icons.add(new Image(getClass().getResource("/icons/gear_16x16.png").toExternalForm()));
+        icons.add(new Image(getClass().getResource("/icons/gear_24x24.png").toExternalForm()));
+        icons.add(new Image(getClass().getResource("/icons/gear_36x36.png").toExternalForm()));
+        icons.add(new Image(getClass().getResource("/icons/gear_42x42.png").toExternalForm()));
+        icons.add(new Image(getClass().getResource("/icons/gear_64x64.png").toExternalForm()));
+      }
+    } catch (Exception e) {
+      LOGGER.error("Failed to load icons: ", e);
+    }
 
-			if (!fsImages.isEmpty()) {
-				fsImages.forEach((s) -> icons.add(new Image(getClass().getResource(s).toExternalForm())));
-			} else { // add factory images
-				icons.add(new Image(getClass().getResource("/icons/gear_16x16.png").toExternalForm()));
-				icons.add(new Image(getClass().getResource("/icons/gear_24x24.png").toExternalForm()));
-				icons.add(new Image(getClass().getResource("/icons/gear_36x36.png").toExternalForm()));
-				icons.add(new Image(getClass().getResource("/icons/gear_42x42.png").toExternalForm()));
-				icons.add(new Image(getClass().getResource("/icons/gear_64x64.png").toExternalForm()));
-			}
-			return ctx;
-		}).whenComplete((ctx, throwable) -> {
-			if(throwable != null) {
-				LOGGER.error("Failed to load spring application context: ", throwable);
-				Platform.runLater(() -> showErrorAlert(throwable));
-			}
-			else {
-				launchApplicationView(ctx);
-			}
-		});
-	}
+
+  }
+  /*
+   * (non-Javadoc)
+   *
+   * @see javafx.application.Application#init()
+   */
+  @Override
+  public void init() throws Exception
+  {
+    CompletableFuture.supplyAsync(() -> {
+     return SpringApplication.run(this.getClass(), savedArgs);
+    }).whenComplete((ctx, throwable) -> {
+      if (throwable != null) {
+        LOGGER.error("Failed to load spring application context: ", throwable);
+        Platform.runLater(() -> showErrorAlert(throwable));
+      } else {
+        Platform.runLater(() -> {
+          loadIcons(ctx);
+          launchApplicationView(ctx);});
+      }
+    });
+  }
 
 	/*
 	 * (non-Javadoc)
