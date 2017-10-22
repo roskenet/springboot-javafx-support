@@ -354,15 +354,15 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	 * @return the bundle name
 	 */
 	private String getBundleName() {
-		if (!StringUtils.isEmpty(annotation)) {
-			final String lbundle = annotation.bundle();
-			LOGGER.debug("Annotated bundle: {}", lbundle);
-			return lbundle;
-		} else {
+		if (StringUtils.isEmpty(annotation.bundle())) {
 			final String lbundle = getClass().getPackage().getName() + "." + getConventionalName();
 			LOGGER.debug("Bundle: {} based on conventional name.", lbundle);
 			return lbundle;
 		}
+
+		final String lbundle = annotation.bundle();
+		LOGGER.debug("Annotated bundle: {}", lbundle);
+		return lbundle;
 	}
 
 	/**

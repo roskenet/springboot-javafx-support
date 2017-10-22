@@ -15,7 +15,7 @@ import de.roskenet.jfxsupport.test.GuiTest;
 import javafx.scene.control.Button;
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class AnnotatedUnconventionalName extends GuiTest {
+public class AnnotatedUnconventionalNameTest extends GuiTest {
 	
 	@Autowired
 	private Annotated buttonsView;
@@ -25,12 +25,13 @@ public class AnnotatedUnconventionalName extends GuiTest {
         init(buttonsView);
     }
 	
-	@Test
-	/* 
+	/*
 	 * Asserts that we can find a view if the class name doesn't end with 'view'
+	 * see https://github.com/roskenet/springboot-javafx-support/issues/38
 	 */
+	@Test
 	public void showsI18nText() throws Exception {
 	   Button theButton = (Button) find("#theButton");
-	   assertThat(theButton.getText(), is("The Button Text"));
+	   assertThat(theButton.getText(), is("The default Button Text"));
 	}
 }
