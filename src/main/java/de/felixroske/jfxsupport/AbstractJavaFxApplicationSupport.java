@@ -1,15 +1,5 @@
 package de.felixroske.jfxsupport;
 
-import java.awt.SystemTray;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.ConfigurableApplicationContext;
-
 import javafx.application.Application;
 import javafx.application.HostServices;
 import javafx.application.Platform;
@@ -22,12 +12,22 @@ import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ConfigurableApplicationContext;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * The Class AbstractJavaFxApplicationSupport.
  *
  * @author Felix Roske
  */
+@SuppressWarnings("WeakerAccess")
 public abstract class AbstractJavaFxApplicationSupport extends Application {
     private static Logger LOGGER = LoggerFactory.getLogger(AbstractJavaFxApplicationSupport.class);
 
@@ -54,13 +54,12 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
     public static HostServices getAppHostServices() {
         return GUIState.getHostServices();
     }
-    
+
     public static SystemTray getSystemTray() {
         return GUIState.getSystemTray();
     }
 
     /**
-     * 
      * @param window
      *            The FxmlView derived class that should be shown.
      * @param mode
@@ -69,17 +68,17 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
     public static void showView(final Class<? extends AbstractFxmlView> window, final Modality mode) {
         final AbstractFxmlView view = applicationContext.getBean(window);
         Stage newStage = new Stage();
-        
+
         Scene newScene;
-        if(view.getView().getScene() != null) {            
+        if(view.getView().getScene() != null) {
             // This view was already shown so
             // we have a scene for it and use this one.
             newScene = view.getView().getScene();
         }
-        else { 
+        else {
             newScene = new Scene(view.getView());
         }
-        
+
         newStage.setScene(newScene);
         newStage.initModality(mode);
         newStage.initOwner(getStage());
@@ -143,7 +142,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 	 */
 	@Override
 	public void start(final Stage stage) throws Exception {
-        
+
 		GUIState.setStage(stage);
 		GUIState.setHostServices(this.getHostServices());
 		final Stage splashStage = new Stage(StageStyle.UNDECORATED);
@@ -161,7 +160,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 				splashStage.setScene(null);
 			}
 		};
-	    
+
 		synchronized (this) {
 			if (appCtxLoaded.get()) {
 				// Spring ContextLoader was faster
@@ -185,9 +184,9 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 		} else {
 			GUIState.getStage().initStyle(StageStyle.DECORATED);
 		}
-		
-		beforeInitialView();
-		
+
+		beforeInitialView(GUIState.getStage(), applicationContext);
+
 		showView(savedInitialView);
 	}
 
@@ -211,7 +210,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 	public static void showView(final Class<? extends AbstractFxmlView> newView) {
 		try {
 			final AbstractFxmlView view = applicationContext.getBean(newView);
-			
+
 			if(GUIState.getScene() == null) {
 				GUIState.setScene(new Scene(view.getView()));
 			}
@@ -322,25 +321,25 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 		} else {
 			AbstractJavaFxApplicationSupport.splashScreen = new SplashScreen();
 		}
-		
+
         if(SystemTray.isSupported()) {
             GUIState.setSystemTray(SystemTray.getSystemTray());
          }
-        
+
 		Application.launch(appClass, args);
 	}
 
 	/**
 	 * Gets called after full initialization of Spring application context
 	 * and JavaFX platform right before the initial view is shown.
-	 * Override this method as a hook to add special code for your app. Especially meant to 
-	 * add AWT code to add a system tray icon and behavior by calling 
+	 * Override this method as a hook to add special code for your app. Especially meant to
+	 * add AWT code to add a system tray icon and behavior by calling
 	 * GUIState.getSystemTray() and modifying it accordingly.
-	 * 
+	 *
 	 * By default noop.
-	 * 
+	 * @param stage can be used to customize the stage before being displayed
+	 * @param ctx represents spring ctx where you can loog for beans.
 	 */
-	public void beforeInitialView() {
-	    
+	public void beforeInitialView(final Stage stage, final ConfigurableApplicationContext ctx) {
 	}
 }
