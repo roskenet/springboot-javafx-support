@@ -1,3 +1,11 @@
+-- Branch for Spring Boot 2.x:
+2.1.2 Initial release for Spring Boot 2.x
+
+-- Branch for Spring Boot 1.5:
+(Will be deprecated after final release of Spring Boot 2)
+
+1.4.3 Correct bundles handling
+
 1.4.1 Proper error handling when icon load fails (#29)
 
 1.4.0 Add beforeInitialView() lifecycle method.
