@@ -91,7 +91,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
   private void loadIcons(ConfigurableApplicationContext ctx)
   {
     try {
-      final List<String> fsImages = PropertyReaderHelper.get(ctx.getEnvironment(), "javafx.appicons");
+      final List<String> fsImages = PropertyReaderHelper.get(ctx.getEnvironment(), Constant.KEY_APPICONS);
 
       if (!fsImages.isEmpty()) {
         fsImages.forEach((s) ->
@@ -178,7 +178,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 	 * Show initial view.
 	 */
 	private void showInitialView() {
-		final String stageStyle = applicationContext.getEnvironment().getProperty("javafx.stage.style");
+		final String stageStyle = applicationContext.getEnvironment().getProperty(Constant.KEY_STAGE_STYLE);
 		if (stageStyle != null) {
 			GUIState.getStage().initStyle(StageStyle.valueOf(stageStyle.toUpperCase()));
 		} else {
@@ -246,16 +246,16 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 	 * Apply env props to view.
 	 */
 	private static void applyEnvPropsToView() {
-		PropertyReaderHelper.setIfPresent(applicationContext.getEnvironment(), "javafx.title", String.class,
+		PropertyReaderHelper.setIfPresent(applicationContext.getEnvironment(), Constant.KEY_TITLE, String.class,
 				GUIState.getStage()::setTitle);
 
-		PropertyReaderHelper.setIfPresent(applicationContext.getEnvironment(), "javafx.stage.width", Double.class,
+		PropertyReaderHelper.setIfPresent(applicationContext.getEnvironment(), Constant.KEY_STAGE_WIDTH, Double.class,
 				GUIState.getStage()::setWidth);
 
-		PropertyReaderHelper.setIfPresent(applicationContext.getEnvironment(), "javafx.stage.height", Double.class,
+		PropertyReaderHelper.setIfPresent(applicationContext.getEnvironment(), Constant.KEY_STAGE_HEIGHT, Double.class,
 				GUIState.getStage()::setHeight);
 
-		PropertyReaderHelper.setIfPresent(applicationContext.getEnvironment(), "javafx.stage.resizable", Boolean.class,
+		PropertyReaderHelper.setIfPresent(applicationContext.getEnvironment(), Constant.KEY_STAGE_RESIZABLE, Boolean.class,
 				GUIState.getStage()::setResizable);
 	}
 
