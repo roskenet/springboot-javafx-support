@@ -1,3 +1,5 @@
+1.4.3 Correct handling of bundles
+
 1.4.1 Proper error handling when icon load fails (#29)
 
 1.4.0 Add beforeInitialView() lifecycle method.
