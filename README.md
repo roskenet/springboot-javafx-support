@@ -5,7 +5,10 @@
 # springboot-javafx-support
 Attention:
 The current master is for Spring Boot 2 and Spring Framework 5.
-The latest production ready release is 1.4.1!
+
+The latest production ready releases: 
+*  For Spring Boot 1.5.x is 1.4.3.
+*  For Spring Boot 2.x is 2.1.2.
 
 Spring Boot and JavaFx - A perfect match!
 
