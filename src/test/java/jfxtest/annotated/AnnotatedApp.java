@@ -8,6 +8,6 @@ import de.felixroske.jfxsupport.AbstractJavaFxApplicationSupport;
 public class AnnotatedApp extends AbstractJavaFxApplicationSupport{
 
     public static void main(String[] args) {
-            launchApp(AnnotatedApp.class, AnnotatedView.class, args);
+            launch(AnnotatedApp.class, AnnotatedView.class, args);
     }
 }

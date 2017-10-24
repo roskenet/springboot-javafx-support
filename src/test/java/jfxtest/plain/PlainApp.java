@@ -8,6 +8,6 @@ import de.felixroske.jfxsupport.AbstractJavaFxApplicationSupport;
 public class PlainApp extends AbstractJavaFxApplicationSupport{
 
     public static void main(String[] args) {
-            launchApp(PlainApp.class, PlainView.class, args);
+            launch(PlainApp.class, PlainView.class, args);
     }
 }

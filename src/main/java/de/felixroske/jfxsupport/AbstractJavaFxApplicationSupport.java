@@ -293,10 +293,10 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 	 * @param args
 	 *            the args
 	 */
-	public static void launchApp(final Class<? extends AbstractJavaFxApplicationSupport> appClass,
+	public static void launch(final Class<? extends Application> appClass,
 			final Class<? extends AbstractFxmlView> view, final String[] args) {
 
-		launchApp(appClass, view, new SplashScreen(), args);
+		launch(appClass, view, new SplashScreen(), args);
 	}
 
 	/**
@@ -311,7 +311,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 	 * @param args
 	 *            the args
 	 */
-	public static void launchApp(final Class<? extends AbstractJavaFxApplicationSupport> appClass,
+	public static void launch(final Class<? extends Application> appClass,
 			final Class<? extends AbstractFxmlView> view, final SplashScreen splashScreen, final String[] args) {
 		savedInitialView = view;
 		savedArgs = args;
