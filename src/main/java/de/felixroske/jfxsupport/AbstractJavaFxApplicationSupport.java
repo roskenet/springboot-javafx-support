@@ -19,6 +19,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -40,6 +42,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
     private static SplashScreen splashScreen;
 
     private static List<Image> icons = new ArrayList<>();
+    private final List<Image> defaultIcons = new ArrayList<>();
 
     private final BooleanProperty appCtxLoaded = new SimpleBooleanProperty(false);
 
@@ -60,22 +63,19 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
     }
 
     /**
-     * @param window
-     *            The FxmlView derived class that should be shown.
-     * @param mode
-     *            See {@code javafx.stage.Modality}.
+     * @param window The FxmlView derived class that should be shown.
+     * @param mode   See {@code javafx.stage.Modality}.
      */
     public static void showView(final Class<? extends AbstractFxmlView> window, final Modality mode) {
         final AbstractFxmlView view = applicationContext.getBean(window);
         Stage newStage = new Stage();
 
         Scene newScene;
-        if(view.getView().getScene() != null) {
+        if (view.getView().getScene() != null) {
             // This view was already shown so
             // we have a scene for it and use this one.
             newScene = view.getView().getScene();
-        }
-        else {
+        } else {
             newScene = new Scene(view.getView());
         }
 
@@ -88,258 +88,261 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
         newStage.showAndWait();
     }
 
-  private void loadIcons(ConfigurableApplicationContext ctx)
-  {
-    try {
-      final List<String> fsImages = PropertyReaderHelper.get(ctx.getEnvironment(), Constant.KEY_APPICONS);
+    private void loadIcons(ConfigurableApplicationContext ctx) {
+        try {
+            final List<String> fsImages = PropertyReaderHelper.get(ctx.getEnvironment(), Constant.KEY_APPICONS);
 
-      if (!fsImages.isEmpty()) {
-        fsImages.forEach((s) ->
-            {
-              Image img =  new Image(getClass().getResource(s).toExternalForm());
-              icons.add(img);
+            if (!fsImages.isEmpty()) {
+                fsImages.forEach((s) ->
+                        {
+                            Image img = new Image(getClass().getResource(s).toExternalForm());
+                            icons.add(img);
+                        }
+                );
+            } else { // add factory images
+                icons.addAll(defaultIcons);
             }
-        );
-      } else { // add factory images
-        icons.add(new Image(getClass().getResource("/icons/gear_16x16.png").toExternalForm()));
-        icons.add(new Image(getClass().getResource("/icons/gear_24x24.png").toExternalForm()));
-        icons.add(new Image(getClass().getResource("/icons/gear_36x36.png").toExternalForm()));
-        icons.add(new Image(getClass().getResource("/icons/gear_42x42.png").toExternalForm()));
-        icons.add(new Image(getClass().getResource("/icons/gear_64x64.png").toExternalForm()));
-      }
-    } catch (Exception e) {
-      LOGGER.error("Failed to load icons: ", e);
+        } catch (Exception e) {
+            LOGGER.error("Failed to load icons: ", e);
+        }
+
+
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see javafx.application.Application#init()
+     */
+    @Override
+    public void init() throws Exception {
+        // Load in JavaFx Thread and reused by Completable Future, but should no be a big deal.
+        defaultIcons.addAll(loadDefaultIcons());
+        CompletableFuture.supplyAsync(() -> {
+            return SpringApplication.run(this.getClass(), savedArgs);
+        }).whenComplete((ctx, throwable) -> {
+            if (throwable != null) {
+                LOGGER.error("Failed to load spring application context: ", throwable);
+                Platform.runLater(() -> showErrorAlert(throwable));
+            } else {
+                Platform.runLater(() -> {
+                    loadIcons(ctx);
+                    launchApplicationView(ctx);
+                });
+            }
+        });
     }
 
 
-  }
-  /*
-   * (non-Javadoc)
-   *
-   * @see javafx.application.Application#init()
-   */
-  @Override
-  public void init() throws Exception
-  {
-    CompletableFuture.supplyAsync(() -> {
-     return SpringApplication.run(this.getClass(), savedArgs);
-    }).whenComplete((ctx, throwable) -> {
-      if (throwable != null) {
-        LOGGER.error("Failed to load spring application context: ", throwable);
-        Platform.runLater(() -> showErrorAlert(throwable));
-      } else {
-        Platform.runLater(() -> {
-          loadIcons(ctx);
-          launchApplicationView(ctx);});
-      }
-    });
-  }
+    /*
+     * (non-Javadoc)
+     *
+     * @see javafx.application.Application#start(javafx.stage.Stage)
+     */
+    @Override
+    public void start(final Stage stage) throws Exception {
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see javafx.application.Application#start(javafx.stage.Stage)
-	 */
-	@Override
-	public void start(final Stage stage) throws Exception {
+        GUIState.setStage(stage);
+        GUIState.setHostServices(this.getHostServices());
+        final Stage splashStage = new Stage(StageStyle.UNDECORATED);
 
-		GUIState.setStage(stage);
-		GUIState.setHostServices(this.getHostServices());
-		final Stage splashStage = new Stage(StageStyle.UNDECORATED);
+        if (AbstractJavaFxApplicationSupport.splashScreen.visible()) {
+            final Scene splashScene = new Scene(splashScreen.getParent());
+            splashStage.setScene(splashScene);
+            splashStage.getIcons().addAll(defaultIcons);
+            beforeShowingSplash(splashStage);
+            splashStage.show();
+        }
 
-		if (AbstractJavaFxApplicationSupport.splashScreen.visible()) {
-			final Scene splashScene = new Scene(splashScreen.getParent());
-			splashStage.setScene(splashScene);
-			splashStage.show();
-		}
+        final Runnable showMainAndCloseSplash = () -> {
+            showInitialView();
+            if (AbstractJavaFxApplicationSupport.splashScreen.visible()) {
+                splashStage.hide();
+                splashStage.setScene(null);
+            }
+        };
 
-		final Runnable showMainAndCloseSplash = () -> {
-			showInitialView();
-			if (AbstractJavaFxApplicationSupport.splashScreen.visible()) {
-				splashStage.hide();
-				splashStage.setScene(null);
-			}
-		};
+        synchronized (this) {
+            if (appCtxLoaded.get()) {
+                // Spring ContextLoader was faster
+                Platform.runLater(showMainAndCloseSplash);
+            } else {
+                appCtxLoaded.addListener((ov, oVal, nVal) -> {
+                    Platform.runLater(showMainAndCloseSplash);
+                });
+            }
+        }
 
-		synchronized (this) {
-			if (appCtxLoaded.get()) {
-				// Spring ContextLoader was faster
-				Platform.runLater(showMainAndCloseSplash);
-			} else {
-				appCtxLoaded.addListener((ov, oVal, nVal) -> {
-					Platform.runLater(showMainAndCloseSplash);
-				});
-			}
-		}
-
-	}
-
-	/**
-	 * Show initial view.
-	 */
-	private void showInitialView() {
-		final String stageStyle = applicationContext.getEnvironment().getProperty(Constant.KEY_STAGE_STYLE);
-		if (stageStyle != null) {
-			GUIState.getStage().initStyle(StageStyle.valueOf(stageStyle.toUpperCase()));
-		} else {
-			GUIState.getStage().initStyle(StageStyle.DECORATED);
-		}
-
-		beforeInitialView(GUIState.getStage(), applicationContext);
-
-		showView(savedInitialView);
-	}
-
+    }
 
 
     /**
-	 * Launch application view.
-	 *
-	 */
-	private void launchApplicationView(final ConfigurableApplicationContext ctx) {
-		AbstractJavaFxApplicationSupport.applicationContext = ctx;
-		appCtxLoaded.set(true);
-	}
+     * Show initial view.
+     */
+    private void showInitialView() {
+        final String stageStyle = applicationContext.getEnvironment().getProperty(Constant.KEY_STAGE_STYLE);
+        if (stageStyle != null) {
+            GUIState.getStage().initStyle(StageStyle.valueOf(stageStyle.toUpperCase()));
+        } else {
+            GUIState.getStage().initStyle(StageStyle.DECORATED);
+        }
 
-	/**
-	 * Show view.
-	 *
-	 * @param newView
-	 *            the new view
-	 */
-	public static void showView(final Class<? extends AbstractFxmlView> newView) {
-		try {
-			final AbstractFxmlView view = applicationContext.getBean(newView);
+        beforeInitialView(GUIState.getStage(), applicationContext);
 
-			if(GUIState.getScene() == null) {
-				GUIState.setScene(new Scene(view.getView()));
-			}
-			else {
-				GUIState.getScene().setRoot(view.getView());
-			}
-			GUIState.getStage().setScene(GUIState.getScene());
+        showView(savedInitialView);
+    }
 
-			applyEnvPropsToView();
 
-			GUIState.getStage().getIcons().addAll(icons);
-			GUIState.getStage().show();
+    /**
+     * Launch application view.
+     */
+    private void launchApplicationView(final ConfigurableApplicationContext ctx) {
+        AbstractJavaFxApplicationSupport.applicationContext = ctx;
+        appCtxLoaded.set(true);
+    }
 
-		} catch(Throwable t) {
-			LOGGER.error("Failed to load application: ", t);
-			showErrorAlert(t);
-		}
-	}
+    /**
+     * Show view.
+     *
+     * @param newView the new view
+     */
+    public static void showView(final Class<? extends AbstractFxmlView> newView) {
+        try {
+            final AbstractFxmlView view = applicationContext.getBean(newView);
 
-	/**
-	 * Show error alert that close app.
-	 *
-	 * @param throwable
-	 *            cause of error
-	 */
-	private static void showErrorAlert(Throwable throwable) {
-		Alert alert = new Alert(AlertType.ERROR, "Oops! An unrecoverable error occurred.\n" +
-				"Please contact your software vendor.\n\n" +
-				"The application will stop now.");
-		alert.showAndWait().ifPresent(response -> Platform.exit());
-	}
-	/**
-	 * Apply env props to view.
-	 */
-	private static void applyEnvPropsToView() {
-		PropertyReaderHelper.setIfPresent(applicationContext.getEnvironment(), Constant.KEY_TITLE, String.class,
-				GUIState.getStage()::setTitle);
+            if (GUIState.getScene() == null) {
+                GUIState.setScene(new Scene(view.getView()));
+            } else {
+                GUIState.getScene().setRoot(view.getView());
+            }
+            GUIState.getStage().setScene(GUIState.getScene());
 
-		PropertyReaderHelper.setIfPresent(applicationContext.getEnvironment(), Constant.KEY_STAGE_WIDTH, Double.class,
-				GUIState.getStage()::setWidth);
+            applyEnvPropsToView();
 
-		PropertyReaderHelper.setIfPresent(applicationContext.getEnvironment(), Constant.KEY_STAGE_HEIGHT, Double.class,
-				GUIState.getStage()::setHeight);
+            GUIState.getStage().getIcons().addAll(icons);
+            GUIState.getStage().show();
 
-		PropertyReaderHelper.setIfPresent(applicationContext.getEnvironment(), Constant.KEY_STAGE_RESIZABLE, Boolean.class,
-				GUIState.getStage()::setResizable);
-	}
+        } catch (Throwable t) {
+            LOGGER.error("Failed to load application: ", t);
+            showErrorAlert(t);
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see javafx.application.Application#stop()
-	 */
-	@Override
-	public void stop() throws Exception {
-		super.stop();
-		if (applicationContext != null) {
-			applicationContext.close();
-		} // else: someone did it already
-	}
+    /**
+     * Show error alert that close app.
+     *
+     * @param throwable cause of error
+     */
+    private static void showErrorAlert(Throwable throwable) {
+        Alert alert = new Alert(AlertType.ERROR, "Oops! An unrecoverable error occurred.\n" +
+                "Please contact your software vendor.\n\n" +
+                "The application will stop now.");
+        alert.showAndWait().ifPresent(response -> Platform.exit());
+    }
 
-	/**
-	 * Sets the title. Allows to overwrite values applied during construction at
-	 * a later time.
-	 *
-	 * @param title
-	 *            the new title
-	 */
-	protected static void setTitle(final String title) {
-		GUIState.getStage().setTitle(title);
-	}
+    /**
+     * Apply env props to view.
+     */
+    private static void applyEnvPropsToView() {
+        PropertyReaderHelper.setIfPresent(applicationContext.getEnvironment(), Constant.KEY_TITLE, String.class,
+                GUIState.getStage()::setTitle);
 
-	/**
-	 * Launch app.
-	 *
-	 * @param appClass
-	 *            the app class
-	 * @param view
-	 *            the view
-	 * @param args
-	 *            the args
-	 */
-	public static void launch(final Class<? extends Application> appClass,
-			final Class<? extends AbstractFxmlView> view, final String[] args) {
+        PropertyReaderHelper.setIfPresent(applicationContext.getEnvironment(), Constant.KEY_STAGE_WIDTH, Double.class,
+                GUIState.getStage()::setWidth);
 
-		launch(appClass, view, new SplashScreen(), args);
-	}
+        PropertyReaderHelper.setIfPresent(applicationContext.getEnvironment(), Constant.KEY_STAGE_HEIGHT, Double.class,
+                GUIState.getStage()::setHeight);
 
-	/**
-	 * Launch app.
-	 *
-	 * @param appClass
-	 *            the app class
-	 * @param view
-	 *            the view
-	 * @param splashScreen
-	 *            the splash screen
-	 * @param args
-	 *            the args
-	 */
-	public static void launch(final Class<? extends Application> appClass,
-			final Class<? extends AbstractFxmlView> view, final SplashScreen splashScreen, final String[] args) {
-		savedInitialView = view;
-		savedArgs = args;
+        PropertyReaderHelper.setIfPresent(applicationContext.getEnvironment(), Constant.KEY_STAGE_RESIZABLE, Boolean.class,
+                GUIState.getStage()::setResizable);
+    }
 
-		if (splashScreen != null) {
-			AbstractJavaFxApplicationSupport.splashScreen = splashScreen;
-		} else {
-			AbstractJavaFxApplicationSupport.splashScreen = new SplashScreen();
-		}
+    /*
+     * (non-Javadoc)
+     *
+     * @see javafx.application.Application#stop()
+     */
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+        if (applicationContext != null) {
+            applicationContext.close();
+        } // else: someone did it already
+    }
 
-        if(SystemTray.isSupported()) {
+    /**
+     * Sets the title. Allows to overwrite values applied during construction at
+     * a later time.
+     *
+     * @param title the new title
+     */
+    protected static void setTitle(final String title) {
+        GUIState.getStage().setTitle(title);
+    }
+
+    /**
+     * Launch app.
+     *
+     * @param appClass the app class
+     * @param view     the view
+     * @param args     the args
+     */
+    public static void launch(final Class<? extends Application> appClass,
+                              final Class<? extends AbstractFxmlView> view, final String[] args) {
+
+        launch(appClass, view, new SplashScreen(), args);
+    }
+
+    /**
+     * Launch app.
+     *
+     * @param appClass     the app class
+     * @param view         the view
+     * @param splashScreen the splash screen
+     * @param args         the args
+     */
+    public static void launch(final Class<? extends Application> appClass,
+                              final Class<? extends AbstractFxmlView> view, final SplashScreen splashScreen, final String[] args) {
+        savedInitialView = view;
+        savedArgs = args;
+
+        if (splashScreen != null) {
+            AbstractJavaFxApplicationSupport.splashScreen = splashScreen;
+        } else {
+            AbstractJavaFxApplicationSupport.splashScreen = new SplashScreen();
+        }
+
+        if (SystemTray.isSupported()) {
             GUIState.setSystemTray(SystemTray.getSystemTray());
-         }
+        }
 
-		Application.launch(appClass, args);
-	}
+        Application.launch(appClass, args);
+    }
 
-	/**
-	 * Gets called after full initialization of Spring application context
-	 * and JavaFX platform right before the initial view is shown.
-	 * Override this method as a hook to add special code for your app. Especially meant to
-	 * add AWT code to add a system tray icon and behavior by calling
-	 * GUIState.getSystemTray() and modifying it accordingly.
-	 *
-	 * By default noop.
-	 * @param stage can be used to customize the stage before being displayed
-	 * @param ctx represents spring ctx where you can loog for beans.
-	 */
-	public void beforeInitialView(final Stage stage, final ConfigurableApplicationContext ctx) {
-	}
+    /**
+     * Gets called after full initialization of Spring application context
+     * and JavaFX platform right before the initial view is shown.
+     * Override this method as a hook to add special code for your app. Especially meant to
+     * add AWT code to add a system tray icon and behavior by calling
+     * GUIState.getSystemTray() and modifying it accordingly.
+     * <p>
+     * By default noop.
+     *
+     * @param stage can be used to customize the stage before being displayed
+     * @param ctx   represents spring ctx where you can loog for beans.
+     */
+    public void beforeInitialView(final Stage stage, final ConfigurableApplicationContext ctx) {
+    }
+
+    public void beforeShowingSplash(Stage splashStage) {
+
+    }
+
+    public Collection<Image> loadDefaultIcons() {
+        return Arrays.asList(new Image(getClass().getResource("/icons/gear_16x16.png").toExternalForm()),
+                new Image(getClass().getResource("/icons/gear_24x24.png").toExternalForm()),
+                new Image(getClass().getResource("/icons/gear_36x36.png").toExternalForm()),
+                new Image(getClass().getResource("/icons/gear_42x42.png").toExternalForm()),
+                new Image(getClass().getResource("/icons/gear_64x64.png").toExternalForm()));
+    }
 }
