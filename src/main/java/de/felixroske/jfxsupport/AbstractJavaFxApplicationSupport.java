@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -144,12 +145,13 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 
         GUIState.setStage(stage);
         GUIState.setHostServices(this.getHostServices());
-        final Stage splashStage = new Stage(StageStyle.UNDECORATED);
+        final Stage splashStage = new Stage(StageStyle.TRANSPARENT);
 
         if (AbstractJavaFxApplicationSupport.splashScreen.visible()) {
-            final Scene splashScene = new Scene(splashScreen.getParent());
+            final Scene splashScene = new Scene(splashScreen.getParent(), Color.TRANSPARENT);
             splashStage.setScene(splashScene);
             splashStage.getIcons().addAll(defaultIcons);
+            splashStage.initStyle(StageStyle.TRANSPARENT);
             beforeShowingSplash(splashStage);
             splashStage.show();
         }
