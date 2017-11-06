@@ -36,11 +36,10 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 
     private static String[] savedArgs = new String[0];
 
-    private static Class<? extends AbstractFxmlView> savedInitialView;
-
+    static Class<? extends AbstractFxmlView> savedInitialView;
+    static SplashScreen splashScreen;
     private static ConfigurableApplicationContext applicationContext;
 
-    private static SplashScreen splashScreen;
 
     private static List<Image> icons = new ArrayList<>();
     private final List<Image> defaultIcons = new ArrayList<>();
