@@ -293,6 +293,19 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 
         launch(appClass, view, new SplashScreen(), args);
     }
+    /**
+     * Launch app.
+     * @deprecated To be more in line with javafx.application please use launch
+     * @param appClass the app class
+     * @param view     the view
+     * @param args     the args
+     */
+    @Deprecated
+    public static void launchApp(final Class<? extends Application> appClass,
+                              final Class<? extends AbstractFxmlView> view, final String[] args) {
+
+        launch(appClass, view, new SplashScreen(), args);
+    }
 
     /**
      * Launch app.
@@ -319,7 +332,21 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 
         Application.launch(appClass, args);
     }
-
+    /**
+     * Launch app.
+     *
+     * @deprecated To be more in line with javafx.application please use launch
+     * @param appClass     the app class
+     * @param view         the view
+     * @param splashScreen the splash screen
+     * @param args         the args
+     */
+    @Deprecated
+    public static void launchApp(final Class<? extends Application> appClass,
+                              final Class<? extends AbstractFxmlView> view, final SplashScreen splashScreen, final String[] args) {
+        launch(appClass, view, splashScreen, args);
+    }
+    
     /**
      * Gets called after full initialization of Spring application context
      * and JavaFX platform right before the initial view is shown.

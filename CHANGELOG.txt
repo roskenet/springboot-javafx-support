@@ -1,4 +1,7 @@
 -- Branch for Spring Boot 2.x:
+2.1.4 Revert breaking changes
+      Mark launchApp as deprecated only
+
 2.1.3 Improved app icon and splash screen handling
       and major test coverage improvements
       (clalleme <christophe.lallement@sgcib.com>)
