@@ -1,3 +1,7 @@
+1.4.4 Improved app icon and splash screen handling
+      and major test coverage improvements
+(clalleme <christophe.lallement@sgcib.com>)
+
 1.4.3 Correct handling of bundles
 
 1.4.1 Proper error handling when icon load fails (#29)
