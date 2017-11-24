@@ -149,6 +149,10 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 		if (AbstractJavaFxApplicationSupport.splashScreen.visible()) {
 			final Scene splashScene = new Scene(splashScreen.getParent(), Color.TRANSPARENT);
 			splashStage.setScene(splashScene);
+            splashStage.getIcons().addAll(defaultIcons);
+            splashStage.initStyle(StageStyle.TRANSPARENT);
+            beforeShowingSplash(splashStage);
+            splashStage.show();
 		}
 
         final Runnable showMainAndCloseSplash = () -> {
