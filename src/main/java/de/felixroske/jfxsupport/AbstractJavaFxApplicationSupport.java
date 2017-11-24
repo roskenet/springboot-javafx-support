@@ -146,14 +146,10 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
         GUIState.setHostServices(this.getHostServices());
         final Stage splashStage = new Stage(StageStyle.TRANSPARENT);
 
-        if (AbstractJavaFxApplicationSupport.splashScreen.visible()) {
-            final Scene splashScene = new Scene(splashScreen.getParent(), Color.TRANSPARENT);
-            splashStage.setScene(splashScene);
-            splashStage.getIcons().addAll(defaultIcons);
-            splashStage.initStyle(StageStyle.TRANSPARENT);
-            beforeShowingSplash(splashStage);
-            splashStage.show();
-        }
+		if (AbstractJavaFxApplicationSupport.splashScreen.visible()) {
+			final Scene splashScene = new Scene(splashScreen.getParent(), Color.TRANSPARENT);
+			splashStage.setScene(splashScene);
+		}
 
         final Runnable showMainAndCloseSplash = () -> {
             showInitialView();
