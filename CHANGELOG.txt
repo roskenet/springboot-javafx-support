@@ -1,3 +1,5 @@
+1.4.5 Code improvements
+
 1.4.4 Improved app icon and splash screen handling
       and major test coverage improvements
 (clalleme <christophe.lallement@sgcib.com>)
