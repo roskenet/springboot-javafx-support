@@ -237,7 +237,8 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
     private static void showErrorAlert(Throwable throwable) {
         Alert alert = new Alert(AlertType.ERROR, "Oops! An unrecoverable error occurred.\n" +
                 "Please contact your software vendor.\n\n" +
-                "The application will stop now.");
+                "The application will stop now.\n\n" + 
+                "Error: " + throwable.getMessage());
         alert.showAndWait().ifPresent(response -> Platform.exit());
     }
 
