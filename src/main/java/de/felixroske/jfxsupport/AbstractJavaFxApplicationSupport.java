@@ -1,27 +1,20 @@
 package de.felixroske.jfxsupport;
 
-import javafx.application.Application;
-import javafx.application.HostServices;
-import javafx.application.Platform;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.ConfigurableApplicationContext;
+import org.slf4j.*;
+import org.springframework.boot.*;
+import org.springframework.context.*;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.*;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.*;
+import javafx.application.*;
+import javafx.scene.*;
+import javafx.scene.control.*;
+import javafx.scene.control.Alert.*;
+import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
+import javafx.stage.*;
 
 /**
  * The Class AbstractJavaFxApplicationSupport.
@@ -35,11 +28,13 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
     private static String[] savedArgs = new String[0];
 
     static Class<? extends AbstractFxmlView> savedInitialView;
+
     static SplashScreen splashScreen;
+
     private static ConfigurableApplicationContext applicationContext;
 
-
     private static List<Image> icons = new ArrayList<>();
+
     private final List<Image> defaultIcons = new ArrayList<>();
 
     private final CompletableFuture<Runnable> splashIsShowing;
@@ -228,7 +223,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
     private static void showErrorAlert(Throwable throwable) {
         Alert alert = new Alert(AlertType.ERROR, "Oops! An unrecoverable error occurred.\n" +
                 "Please contact your software vendor.\n\n" +
-                "The application will stop now.\n\n" + 
+                "The application will stop now.\n\n" +
                 "Error: " + throwable.getMessage());
         alert.showAndWait().ifPresent(response -> Platform.exit());
     }
