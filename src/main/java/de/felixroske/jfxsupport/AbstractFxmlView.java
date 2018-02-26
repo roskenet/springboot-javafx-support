@@ -63,6 +63,8 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 
 	private Modality currentStageModality;
 
+	private boolean isPrimaryStageView = false;
+
 	/**
 	 * Instantiates a new abstract fxml view.
 	 */
@@ -175,6 +177,17 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	}
 
     /**
+     * Sets up the first view using the primary {@link Stage}
+     */
+	protected void initFirstView() {
+        isPrimaryStageView = true;
+	    stage = GUIState.getStage();
+        Scene scene = getView().getScene() != null ? getView().getScene() : new Scene(getView());
+        stage.setScene(scene);
+        GUIState.setScene(scene);
+    }
+
+    /**
      * Shows the FxmlView instance being the child stage of the given {@link Window}
      *
      * @param window
@@ -183,7 +196,7 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
      *          See {@code javafx.stage.Modality}.
      */
     public void showView(Window window, Modality modality) {
-        if (stage == null || currentStageModality != modality || !stage.getOwner().equals(window)) {
+        if (! isPrimaryStageView && (stage == null || currentStageModality != modality || !Objects.equals(stage.getOwner(), window))) {
             stage = createStage(modality);
             stage.initOwner(window);
         }
@@ -197,7 +210,7 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
      *          See {@code javafx.stage.Modality}.
      */
     public void showView(Modality modality) {
-        if (stage == null || currentStageModality != modality) {
+        if (! isPrimaryStageView && (stage == null || currentStageModality != modality)) {
             stage = createStage(modality);
         }
         stage.show();
@@ -213,7 +226,11 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
      *          See {@code javafx.stage.Modality}.
      */
     public void showViewAndWait(Window window, Modality modality) {
-        if (stage == null || currentStageModality != modality || !stage.getOwner().equals(window)) {
+        if (isPrimaryStageView) {
+            showView(modality); // this modality will be ignored anyway
+            return;
+        }
+        if (stage == null || currentStageModality != modality || !Objects.equals(stage.getOwner(), window)) {
             stage = createStage(modality);
             stage.initOwner(window);
         }
@@ -228,6 +245,10 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
      *          See {@code javafx.stage.Modality}.
      */
     public void showViewAndWait(Modality modality) {
+        if (isPrimaryStageView) {
+            showView(modality); // this modality will be ignored anyway
+            return;
+        }
         if (stage == null || currentStageModality != modality) {
             stage = createStage(modality);
         }
