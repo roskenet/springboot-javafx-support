@@ -1,23 +1,5 @@
 package de.felixroske.jfxsupport;
 
-import static java.util.ResourceBundle.getBundle;
-
-import java.io.IOException;
-import java.net.URL;
-import java.util.List;
-import java.util.MissingResourceException;
-import java.util.Optional;
-import java.util.ResourceBundle;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.util.StringUtils;
-
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -28,6 +10,25 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.StageStyle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.util.StringUtils;
+
+import java.io.IOException;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.MissingResourceException;
+import java.util.Optional;
+import java.util.ResourceBundle;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
+
+import static java.util.ResourceBundle.getBundle;
 
 /**
  * Base class for fxml-based view classes.
@@ -403,17 +404,24 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	 * @return the resource bundle
 	 */
 	private Optional<ResourceBundle> getResourceBundle(final String name) {
-	    ResourceBundle bundle;
-
 		try {
 			LOGGER.debug("Resource bundle: " + name);
-			bundle = getBundle(name);
+			return Optional.of(getBundle(name,
+				new ResourceBundleControl(getResourceBundleCharset())));
 		} catch (final MissingResourceException ex) {
 			LOGGER.debug("No resource bundle could be determined: " + ex.getMessage());
-			bundle = null;
+			return Optional.empty();
 		}
-		
-		return Optional.ofNullable(bundle);
+	}
+
+	/**
+	 * Returns the charset to use when reading resource bundles as specified in
+	 * the annotation.
+	 *
+	 * @return  the charset
+	 */
+	private Charset getResourceBundleCharset() {
+		return Charset.forName(annotation.encoding());
 	}
 
 	/**

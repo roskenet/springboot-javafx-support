@@ -1,11 +1,9 @@
 package de.felixroske.jfxsupport;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
 import org.springframework.stereotype.Component;
 
-import javafx.stage.StageStyle;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 /**
  * The annotation {@link FXMLView} indicates a class to be used in the context
@@ -38,6 +36,14 @@ public @interface FXMLView {
 	 * @return the string of such resource bundle.
 	 */
 	String bundle() default "";
+
+	/**
+	 * The encoding that will be sued when reading the {@link #bundle()} file.
+	 * The default encoding is ISO-8859-1.
+	 *
+	 * @return  the encoding to use when reading the resource bundle
+	 */
+	String encoding() default "ISO-8859-1";
 	
 	/**
 	 * The default title for this view for modal.

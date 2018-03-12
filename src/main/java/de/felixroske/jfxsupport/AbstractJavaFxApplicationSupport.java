@@ -3,8 +3,6 @@ package de.felixroske.jfxsupport;
 import javafx.application.Application;
 import javafx.application.HostServices;
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -44,7 +42,11 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
     private static List<Image> icons = new ArrayList<>();
     private final List<Image> defaultIcons = new ArrayList<>();
 
-    private final BooleanProperty appCtxLoaded = new SimpleBooleanProperty(false);
+    private final CompletableFuture<Runnable> splashIsShowing;
+
+    protected AbstractJavaFxApplicationSupport() {
+        splashIsShowing = new CompletableFuture<>();
+    }
 
     public static Stage getStage() {
         return GUIState.getStage();
@@ -118,9 +120,9 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
     public void init() throws Exception {
         // Load in JavaFx Thread and reused by Completable Future, but should no be a big deal.
         defaultIcons.addAll(loadDefaultIcons());
-        CompletableFuture.supplyAsync(() -> {
-            return SpringApplication.run(this.getClass(), savedArgs);
-        }).whenComplete((ctx, throwable) -> {
+        CompletableFuture.supplyAsync(() ->
+            SpringApplication.run(this.getClass(), savedArgs)
+        ).whenComplete((ctx, throwable) -> {
             if (throwable != null) {
                 LOGGER.error("Failed to load spring application context: ", throwable);
                 Platform.runLater(() -> showErrorAlert(throwable));
@@ -130,6 +132,8 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
                     launchApplicationView(ctx);
                 });
             }
+        }).thenAcceptBothAsync(splashIsShowing, (ctx, closeSplash) -> {
+            Platform.runLater(closeSplash);
         });
     }
 
@@ -155,25 +159,13 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
             splashStage.show();
 		}
 
-        final Runnable showMainAndCloseSplash = () -> {
+        splashIsShowing.complete(() -> {
             showInitialView();
             if (AbstractJavaFxApplicationSupport.splashScreen.visible()) {
                 splashStage.hide();
                 splashStage.setScene(null);
             }
-        };
-
-        synchronized (this) {
-            if (appCtxLoaded.get()) {
-                // Spring ContextLoader was faster
-                Platform.runLater(showMainAndCloseSplash);
-            } else {
-                appCtxLoaded.addListener((ov, oVal, nVal) -> {
-                    Platform.runLater(showMainAndCloseSplash);
-                });
-            }
-        }
-
+        });
     }
 
 
@@ -199,7 +191,6 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
      */
     private void launchApplicationView(final ConfigurableApplicationContext ctx) {
         AbstractJavaFxApplicationSupport.applicationContext = ctx;
-        appCtxLoaded.set(true);
     }
 
     /**
