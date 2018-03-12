@@ -1,4 +1,9 @@
 -- Branch for Spring Boot 2.x:
+2.1.6 Concurrency fixes
+      Fix concurrency issues
+      Fix encoding bug in resouce bundles
+      (Thanks to pycnik <emil@speedment.com>)
+
 2.1.5 Code improvements
 
 2.1.4 Revert breaking changes
