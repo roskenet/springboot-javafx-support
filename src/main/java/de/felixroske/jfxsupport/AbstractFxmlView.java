@@ -187,6 +187,11 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
         GUIState.setScene(scene);
     }
 
+    public void hide() {
+	    if (stage != null)
+	        stage.hide();
+    }
+
     /**
      * Shows the FxmlView instance being the child stage of the given {@link Window}
      *
