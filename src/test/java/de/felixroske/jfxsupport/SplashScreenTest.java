@@ -1,41 +1,39 @@
 package de.felixroske.jfxsupport;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.CoreMatchers.is;
+import de.felixroske.jfxtest.*;
+import org.junit.jupiter.api.*;
+
+import javafx.scene.*;
+import javafx.scene.layout.*;
+
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
-import org.junit.Test;
+public class SplashScreenTest extends SpringJavaFxTestingBase {
 
-import javafx.scene.Parent;
-import javafx.scene.layout.Pane;
+    SplashScreen splashScreen;
 
-public class SplashScreenTest {
-
-    class TestSplashScreen extends SplashScreen {
-        @Override
-        public Parent getParent() {
-            Pane pane = new Pane();
-            return pane;
-        }
+    @BeforeEach
+    public void beforeEach() {
+        splashScreen = new SplashScreen();
     }
 
     @Test
-    public void testGetParent() {
-        SplashScreen splashScreen = new TestSplashScreen();
+    @DisplayName ("Get parent")
+    public void getParentTest() {
         Parent parent = splashScreen.getParent();
         assertThat(parent, is(instanceOf(Pane.class)));
     }
 
     @Test
-    public void testVisible() {
-        SplashScreen splashScreen = new TestSplashScreen();
+    @DisplayName ("Is visible test")
+    public void isVisibleTest() {
         assertThat(splashScreen.visible(), is(Boolean.TRUE));
     }
 
     @Test
-    public void testGetImagePath() {
-        SplashScreen splashScreen = new TestSplashScreen();
+    @DisplayName ("Get image path")
+    public void getImagePathTest() {
         assertThat(splashScreen.getImagePath(), is("/splash/javafx.png"));
     }
-
 }

@@ -1,25 +1,16 @@
 package de.felixroske.jfxsupport;
 
-import javafx.scene.image.Image;
-import jfxtest.annotated.AnnotatedView;
-import org.hamcrest.CoreMatchers;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.testfx.api.FxToolkit;
+import de.felixroske.jfxtest.*;
+import org.hamcrest.*;
+import org.junit.jupiter.api.*;
+import org.testfx.api.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
+import javafx.scene.image.*;
 
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
-/**
- * Created on 11/3/2017 for Onyx.
- */
-//@RunWith(SpringRunner.class)
-//@SpringBootTest
-public class AbstractJavaFxApplicationSupportTest { //extends GuiTest {
+public class AbstractJavaFxApplicationSupportTest {
 
     private AbstractJavaFxApplicationSupport app;
 
@@ -27,30 +18,30 @@ public class AbstractJavaFxApplicationSupportTest { //extends GuiTest {
 
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         System.setProperty("testfx.headless", "true");
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
         System.setProperty("testfx.headless", "false");
     }
 
-    @Before
+    @BeforeEach
     public void setup() throws Exception {
         FxToolkit.registerPrimaryStage();
         app = new TestApp();
-        app.savedInitialView = AnnotatedView.class;
+        app.savedInitialView = SampleView.class;
         app.splashScreen = new SplashScreen();
         FxToolkit.setupApplication(() -> app);
     }
 
     @Test
-    public void loadDefaultIcons() throws Exception {
+    @DisplayName ("Load default icons")
+    public void loadDefaultIcons() {
         final Collection<Image> images = new ArrayList<>();
         images.addAll(app.loadDefaultIcons());
         assertThat(images.size(), CoreMatchers.is(5));
     }
-
 }

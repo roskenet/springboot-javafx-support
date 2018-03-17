@@ -1,3 +1,5 @@
 spring:
   jmx:
     enabled: false
+  main:
+    banner-mode: "off"

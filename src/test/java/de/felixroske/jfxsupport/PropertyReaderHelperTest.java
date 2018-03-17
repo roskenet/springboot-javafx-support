@@ -1,25 +1,23 @@
 package de.felixroske.jfxsupport;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
+import org.hamcrest.collection.*;
+import org.junit.jupiter.api.*;
+import org.mockito.*;
+import org.springframework.core.env.*;
+
+import java.util.*;
+
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.when;
-
-import java.util.List;
-
-import org.hamcrest.collection.IsIterableContainingInAnyOrder;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mockito;
-import org.springframework.core.env.Environment;
+import static org.mockito.Mockito.*;
 
 public class PropertyReaderHelperTest {
 
 	private Environment envArrayMock;
 	private Environment envSingleEntryMock;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		envArrayMock = Mockito.mock(Environment.class);
 		envSingleEntryMock = Mockito.mock(Environment.class);
@@ -39,19 +37,22 @@ public class PropertyReaderHelperTest {
 	}
 
 	@Test
-	public void testGet_SingleValue() throws Exception {
+    @DisplayName ("Single value")
+	public void singleValueTest() throws Exception {
 		final List<String> list = PropertyReaderHelper.get(envSingleEntryMock, "entry");
 		assertThat(list, IsIterableContainingInAnyOrder.containsInAnyOrder("entry"));
 	}
 
 	@Test
-	public void testGet_MultipleValues() {
+    @DisplayName ("Multiple values")
+	public void multipleValuesTest() {
 		final List<String> list = PropertyReaderHelper.get(envArrayMock, "entry");
 		assertThat(list, IsIterableContainingInAnyOrder.containsInAnyOrder("entry_0", "entry_1", "entry_2"));
 	}
 
 	@Test
-	public void testSetIfPresent_ExistingKey() throws Exception {
+    @DisplayName ("Set if existing key is present ")
+	public void setIfExistingKeyIsPresentTest() {
 		final TestObject testObject = new TestObject();
 
 		PropertyReaderHelper.setIfPresent(envSingleEntryMock, "stringentry", String.class, testObject::setStringEntry);
@@ -60,7 +61,8 @@ public class PropertyReaderHelperTest {
 	}
 
 	@Test
-	public void testSetIfPresent_NonExistingKey() throws Exception {
+    @DisplayName ("Set if existing key is not present ")
+	public void setIfExistingKeyIsNotPresentTest() {
 		final TestObject testObject = new TestObject();
 
 		PropertyReaderHelper.setIfPresent(envSingleEntryMock, "no_entry", String.class, testObject::setStringEntry);
@@ -68,8 +70,16 @@ public class PropertyReaderHelperTest {
 		assertThat(testObject.getStringEntry(), is("UNSET"));
 	}
 
-	class TestObject {
-		private String stringEntry = "UNSET";
+    @Test
+    @DisplayName ("Determine file path from package name")
+    public void determineFilePathFromPackageNameTest() {
+        final String path = PropertyReaderHelper.determineFilePathFromPackageName(getClass());
+        assertEquals("/de/felixroske/jfxsupport/", path);
+    }
+
+    class TestObject {
+        private String stringEntry = "UNSET";
+
 		private Long longEntry = Long.valueOf(0);
 
 		public String getStringEntry() {
@@ -83,16 +93,9 @@ public class PropertyReaderHelperTest {
 		public Long getLongEntry() {
 			return longEntry;
 		}
-
-		public void setLongEntry(final Long longEntry) {
+        public void setLongEntry(final Long longEntry) {
 			this.longEntry = longEntry;
 		}
-	}
 
-	@Test
-	public void testDetermineFilePathFromPackageName() {
-		final String path = PropertyReaderHelper.determineFilePathFromPackageName(getClass());
-		assertEquals("/de/felixroske/jfxsupport/", path);
 	}
-
 }
