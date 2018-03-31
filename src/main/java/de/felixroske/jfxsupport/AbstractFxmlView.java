@@ -17,6 +17,7 @@ import javafx.beans.value.*;
 import javafx.collections.*;
 import javafx.fxml.*;
 import javafx.scene.*;
+import javafx.scene.image.*;
 import javafx.scene.layout.*;
 import javafx.stage.*;
 
@@ -266,6 +267,8 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
         stage.initModality(modality);
         stage.setTitle(getDefaultTitle());
         stage.initStyle(getDefaultStyle());
+        List<Image> primaryStageIcons = GUIState.getStage().getIcons();
+        stage.getIcons().addAll(primaryStageIcons);
         Scene scene = getView().getScene() != null ? getView().getScene() : new Scene(getView());
         stage.setScene(scene);
         return stage;
