@@ -1,18 +1,21 @@
 package de.felixroske.jfxsupport;
 
 import de.felixroske.jfxtest.*;
-import org.hamcrest.*;
+import javafx.scene.image.Image;
+import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.*;
-import org.testfx.api.*;
+import org.testfx.api.FxToolkit;
 
 import java.util.*;
-import javafx.scene.image.*;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.*;
 
-public class AbstractJavaFxApplicationSupportTest {
+public class CustomErrorActionTest {
 
     private AbstractJavaFxApplicationSupport app;
+
+    ErrorAction errorAction;
 
     @BeforeAll
     public static void beforeClass() {
@@ -26,18 +29,23 @@ public class AbstractJavaFxApplicationSupportTest {
 
     @BeforeEach
     public void setup() throws Exception {
+        errorAction = mock(ErrorAction.class);
         FxToolkit.registerPrimaryStage();
         app = new TestApp();
         app.savedInitialView = SampleView.class;
         app.splashScreen = new SplashScreen();
+        app.setErrorAction(throwable -> errorAction.action());
         FxToolkit.setupApplication(() -> app);
     }
 
     @Test
-    @DisplayName ("Load default icons")
+    @DisplayName ("Custom error action is executed")
     public void loadDefaultIcons() {
-        final Collection<Image> images = new ArrayList<>();
-        images.addAll(app.loadDefaultIcons());
-        assertThat(images.size(), CoreMatchers.is(5));
+        AbstractJavaFxApplicationSupport.showInitialView(SampleIncorrectView.class);
+        verify(errorAction, times(2)).action();
     }
+}
+
+interface ErrorAction {
+    void action();
 }
