@@ -14,8 +14,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>12</maven.compiler.source>
+    <maven.compiler.target>12</maven.compiler.target>
     <junit.version>5.0.1</junit.version>
     <junit-platform.version>1.0.1</junit-platform.version>
     <testfx.version>4.0.8-alpha</testfx.version>
@@ -46,6 +46,16 @@
   </licenses>
 
   <dependencies>
+<dependency>
+    <groupId>org.openjfx</groupId>
+    <artifactId>javafx-controls</artifactId>
+    <version>11.0.2</version>
+</dependency>
+<dependency>
+    <groupId>org.openjfx</groupId>
+    <artifactId>javafx-fxml</artifactId>
+    <version>11.0.2</version>
+</dependency>    
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
@@ -118,6 +128,7 @@
       <version>${testfx.version}</version>
       <scope>test</scope>
     </dependency>
+
       <dependency>
           <groupId>org.testfx</groupId>
           <artifactId>openjfx-monocle</artifactId>
@@ -172,6 +183,7 @@
           </execution>
         </executions>
       </plugin>
+<!-- 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
@@ -182,9 +194,13 @@
             <goals>
               <goal>jar</goal>
             </goals>
+            <configuration> 
+                <additionalparam>-Xdoclint:none</additionalparam>
+            </configuration>
           </execution>
         </executions>
       </plugin>
+ -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>findbugs-maven-plugin</artifactId>
@@ -198,7 +214,7 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.7.4.201502262128</version>
+        <version>0.8.4</version>
         <executions>
           <execution>
             <id>prepare-agent</id>
