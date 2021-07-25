@@ -90,8 +90,26 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
     public void init() throws Exception {
         // Load in JavaFx Thread and reused by Completable Future, but should no be a big deal.
         defaultIcons.addAll(loadDefaultIcons());
-        CompletableFuture.supplyAsync(() ->
-            SpringApplication.run(this.getClass(), savedArgs)
+
+        FutureTask<ConfigurableApplicationContext> ctxTask = new FutureTask(
+                () -> {
+                    SpringApplication springApplication = customSpringApplication();
+                    if (springApplication == null) {
+                        return SpringApplication.run(this.getClass(), savedArgs);
+                    } else {
+                        return springApplication.run(savedArgs);
+                    }
+                }
+        );
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(ctxTask);
+        CompletableFuture.supplyAsync(() ->{
+                    try {
+                        return ctxTask.get();
+                    } catch (Throwable e) {
+                        throw new RuntimeException(e);
+                    }
+                }
         ).whenComplete((ctx, throwable) -> {
             if (throwable != null) {
                 LOGGER.error("Failed to load spring application context: ", throwable);
@@ -102,6 +120,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
                     launchApplicationView(ctx);
                 });
             }
+            executorService.shutdown();
         }).thenAcceptBothAsync(splashIsShowing, (ctx, closeSplash) -> {
             Platform.runLater(closeSplash);
         });
@@ -186,6 +205,10 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
 
     protected static void setErrorAction(Consumer<Throwable> callback) {
         errorAction = callback;
+    }
+
+    protected SpringApplication customSpringApplication() {
+	    return null;
     }
 
     /**
