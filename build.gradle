@@ -1,0 +1,48 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+repositories {
+    mavenLocal()
+    maven {
+        url = uri('https://repo.maven.apache.org/maven2/')
+    }
+}
+
+dependencies {
+    implementation 'org.testfx:openjfx-monocle:8u76-b04'
+    testImplementation 'org.springframework:spring-test:5.0.0.RELEASE'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.0.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.0.1'
+    testImplementation 'org.junit.platform:junit-platform-launcher:1.0.1'
+    testImplementation 'org.junit.platform:junit-platform-runner:1.0.1'
+    testImplementation 'org.testfx:testfx-core:4.0.8-alpha'
+    testImplementation 'org.testfx:testfx-junit5:4.0.8-alpha'
+    implementation 'org.springframework:spring-context:5.0.0.RELEASE'
+    implementation 'org.springframework.boot:spring-boot:2.0.0.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-test:2.0.0.RELEASE'
+    implementation 'org.slf4j:slf4j-api:1.7.25'
+}
+
+group = 'de.roskenet'
+version = '2.6.0-SNAPSHOT'
+description = 'springboot-javafx-support'
+java.sourceCompatibility = JavaVersion.VERSION_1_8
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
+//publishing {
+//    publications {
+//        maven(MavenPublication) {
+//            from(components.java)
+//        }
+//    }
+//}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
