@@ -153,7 +153,13 @@ public abstract class AbstractFxmlView implements ApplicationContextAware {
 	private FXMLLoader loadSynchronously(final URL resource, final Optional<ResourceBundle> bundle) throws IllegalStateException {
 
 		final FXMLLoader loader = new FXMLLoader(resource, bundle.orElse(null));
-		loader.setControllerFactory(this::createControllerForType);
+		loader.setControllerFactory(type -> {
+			Object controller = this.createControllerForType(type);
+			if (controller instanceof AbstractFxmlController) {
+				((AbstractFxmlController) controller).setFields(loader);
+			}
+			return controller;
+		});
 
 		try {
 			loader.load();
