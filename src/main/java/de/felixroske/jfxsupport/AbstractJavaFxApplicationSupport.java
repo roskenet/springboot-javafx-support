@@ -88,13 +88,16 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
      */
     @Override
     public void init() throws Exception {
-        // Load in JavaFx Thread and reused by Completable Future, but should no be a big deal.
+        // Load in JavaFx Thread and reused by Completable Future, but should not be a big deal.
+        // Provide an executor instead of using default, otherwise spring application will fail to start via JAR(mvn package)
+        ExecutorService executor = Executors.newSingleThreadExecutor();
         defaultIcons.addAll(loadDefaultIcons());
         CompletableFuture.supplyAsync(() ->
-            SpringApplication.run(this.getClass(), savedArgs)
+            SpringApplication.run(this.getClass(), savedArgs), executor
         ).whenComplete((ctx, throwable) -> {
             if (throwable != null) {
                 LOGGER.error("Failed to load spring application context: ", throwable);
+                executor.shutdown();
                 Platform.runLater(() -> errorAction.accept(throwable));
             } else {
                 Platform.runLater(() -> {
@@ -103,6 +106,7 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
                 });
             }
         }).thenAcceptBothAsync(splashIsShowing, (ctx, closeSplash) -> {
+            executor.shutdown();
             Platform.runLater(closeSplash);
         });
     }
