@@ -1,7 +1,6 @@
 package de.felixroske.jfxsupport;
 
 import org.slf4j.*;
-import org.springframework.boot.*;
 import org.springframework.context.*;
 
 import java.awt.*;
@@ -27,8 +26,6 @@ import javafx.stage.*;
 public abstract class AbstractJavaFxApplicationSupport extends Application {
     private static Logger LOGGER = LoggerFactory.getLogger(AbstractJavaFxApplicationSupport.class);
 
-    private static String[] savedArgs = new String[0];
-
     static Class<? extends AbstractFxmlView> savedInitialView;
 
     static SplashScreen splashScreen;
@@ -42,6 +39,10 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
     private final List<Image> defaultIcons = new ArrayList<>();
 
     private final CompletableFuture<Runnable> splashIsShowing;
+
+	protected static ConfigurableApplicationContext cac;
+
+	public abstract void loadData();
 
     protected AbstractJavaFxApplicationSupport() {
         splashIsShowing = new CompletableFuture<>();
@@ -81,35 +82,26 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see javafx.application.Application#init()
-     */
-    @Override
-    public void init() throws Exception {
-        // Load in JavaFx Thread and reused by Completable Future, but should not be a big deal.
-        // Provide an executor instead of using default, otherwise spring application will fail to start via JAR(mvn package)
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        defaultIcons.addAll(loadDefaultIcons());
-        CompletableFuture.supplyAsync(() ->
-            SpringApplication.run(this.getClass(), savedArgs), executor
-        ).whenComplete((ctx, throwable) -> {
-            if (throwable != null) {
-                LOGGER.error("Failed to load spring application context: ", throwable);
-                executor.shutdown();
-                Platform.runLater(() -> errorAction.accept(throwable));
-            } else {
-                Platform.runLater(() -> {
-                    loadIcons(ctx);
-                    launchApplicationView(ctx);
-                });
-            }
-        }).thenAcceptBothAsync(splashIsShowing, (ctx, closeSplash) -> {
-            executor.shutdown();
-            Platform.runLater(closeSplash);
-        });
-    }
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see javafx.application.Application#init()
+	 */
+	@Override
+	public void init() throws Exception {
+		// Load in JavaFx Thread and reused by Completable Future, but should no be a
+		// big deal.
+		defaultIcons.addAll(loadDefaultIcons());
+		CompletableFuture.supplyAsync(() -> null).whenComplete((ctx, throwable) -> {
+			Platform.runLater(() -> {
+				loadIcons(cac);
+				launchApplicationView(cac);
+			});
+		}).thenAcceptBothAsync(splashIsShowing, (ctx, closeSplash) -> {
+			loadData();
+			Platform.runLater(closeSplash);
+		});
+	}
 
 
     /*
@@ -281,7 +273,6 @@ public abstract class AbstractJavaFxApplicationSupport extends Application {
     public static void launch(final Class<? extends Application> appClass,
             final Class<? extends AbstractFxmlView> view, final SplashScreen splashScreen, final String[] args) {
         savedInitialView = view;
-        savedArgs = args;
 
         if (splashScreen != null) {
             AbstractJavaFxApplicationSupport.splashScreen = splashScreen;
