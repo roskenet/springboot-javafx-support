@@ -14,6 +14,11 @@ public class SampleApp extends AbstractJavaFxApplicationSupport {
     }
 
     @Override
+    public void loadData() {
+
+    }
+
+    @Override
     public void beforeInitialView(Stage stage, ConfigurableApplicationContext ctx) {
         stage.setTitle("Sample app");
     }
