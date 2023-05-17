@@ -5,7 +5,7 @@
 
   <groupId>de.roskenet</groupId>
   <artifactId>springboot-javafx-support</artifactId>
-  <version>2.1.7-SNAPSHOT</version>
+  <version>3.0.0</version>
   <packaging>jar</packaging>
 
   <name>springboot-javafx-support</name>
@@ -13,21 +13,23 @@
   <url>http://springboot-javafx-support.readthedocs.io</url>
 
   <properties>
+    <java.version>17</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <junit.version>5.0.1</junit.version>
-    <junit-platform.version>1.0.1</junit-platform.version>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <junit.version>5.9.2</junit.version>
+    <junit-platform.version>1.9.2</junit-platform.version>
     <testfx.version>4.0.8-alpha</testfx.version>
-    <spring-framework.version>5.0.0.RELEASE</spring-framework.version>
-    <spring-boot.version>2.2.11.RELEASE</spring-boot.version>
-    <slf4j.version>1.7.25</slf4j.version>
+    <openfx.version>19.0.2.1</openfx.version>
+    <spring-framework.version>6.0.6</spring-framework.version>
+    <spring-boot.version>3.0.6</spring-boot.version>
+    <slf4j.version>2.0.5</slf4j.version>
   </properties>
 
   <scm>
-    <connection>git@github.com:roskenet/springboot-javafx-support.git</connection>
-    <developerConnection>git@github.com:roskenet/springboot-javafx-support.git</developerConnection>
-    <url>https://github.com/roskenet/springboot-javafx-support</url>
+    <connection>git@github.com:yanzhao77/springboot-javafx-support.git</connection>
+    <developerConnection>git@github.com:yanzhao77/springboot-javafx-support.git</developerConnection>
+    <url>https://github.com/yanzhao77/springboot-javafx-support</url>
   </scm>
 
   <developers>
@@ -36,6 +38,10 @@
       <email>f.roske@roskenet.de</email>
       <url>http://www.felixroske.de</url>
       <organization>roskenet</organization>
+    </developer>
+    <developer>
+      <name>azir</name>
+      <email>794070011@qq.com</email>
     </developer>
   </developers>
 
@@ -100,29 +106,27 @@
         <version>${junit-platform.version}</version>
         <scope>test</scope>
     </dependency>
+
     <dependency>
-      <groupId>org.testfx</groupId>
-      <artifactId>testfx-core</artifactId>
-      <version>${testfx.version}</version>
-      <scope>test</scope>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-controls</artifactId>
+      <version>17.0.1</version>
     </dependency>
     <dependency>
-        <groupId>org.testfx</groupId>
-        <artifactId>testfx-core</artifactId>
-        <version>${testfx.version}</version>
-        <scope>test</scope>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-base</artifactId>
+      <version>17.0.1</version>
     </dependency>
     <dependency>
-      <groupId>org.testfx</groupId>
-      <artifactId>testfx-junit5</artifactId>
-      <version>${testfx.version}</version>
-      <scope>test</scope>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-fxml</artifactId>
+      <version>17.0.1</version>
     </dependency>
-      <dependency>
-          <groupId>org.testfx</groupId>
-          <artifactId>openjfx-monocle</artifactId>
-          <version>8u76-b04</version>
-      </dependency>
+    <dependency>
+      <groupId>org.openjfx</groupId>
+      <artifactId>javafx-graphics</artifactId>
+      <version>17.0.1</version>
+    </dependency>
   </dependencies>
 
   <distributionManagement>
@@ -137,7 +141,7 @@
       <plugin>
         <groupId>org.sonatype.plugins</groupId>
         <artifactId>nexus-staging-maven-plugin</artifactId>
-        <version>1.6.3</version>
+        <version>1.6.13</version>
         <extensions>true</extensions>
         <configuration>
           <serverId>ossrh</serverId>
